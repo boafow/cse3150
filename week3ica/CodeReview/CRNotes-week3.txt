@@ -1,0 +1,7 @@
+1. Look at the header files: foo1.h and foo2.h. Do you see something wrong?
+
+2.
+(i)  Return 0 if success, -1 (usually) for bad things
+(ii) It is not a good idea to just check '\n' (this is a Mac text file LF line-finishing symbol). It is different in other systems (e.g., Windows). Test: test.txt (created on windows with 1 extra \r at the FIRST line in the file) and test1.txt (same text but created in Mac). 
+(iii) Return a value 0 at the end. It is OK not returning in main (which by default, return a value 0). But a good habbit to do so.
+
