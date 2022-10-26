@@ -1,33 +1,26 @@
-//
-//  ECTriangle.h
-//  
-//
-//  Created by Yufeng Wu on 1/22/21.
-//
-//
-
 #ifndef ECTriangle_h
 #define ECTriangle_h
 
 #include "ECLineSegment.h"
 #include "ECAbstractConvexPolygon.h"
 
-// -----------------------------------------------------------------------------
-// Triangle on 2D plane
-
 class ECTriangle : public ECAbstractConvexPolygon
 {
 public:
-    ECTriangle(const EC2DPoint &p1, const EC2DPoint &p2, const EC2DPoint &p3);
-    
-    // Test if the polygon is convex? Return false if not
+    ECTriangle(const EC2DPoint& p1, const EC2DPoint& p2, const EC2DPoint& p3): p1(p1), p2(p2), p3(p3){
+        this->AddNode(p1);
+        this->AddNode(p2);
+        this->AddNode(p3);
+    };
     virtual bool IsConvex() const;
-    
-    // Get area of the triangle
     virtual double GetArea() const;
-    
-    // your code here if needed
+    //direction of the point p3 from the line p1-p2
+    int Direction(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
+private:
+    EC2DPoint p1;
+    EC2DPoint p2;
+    EC2DPoint p3;
 };
 
 
-#endif /* ECTriangle_h */
+#endif

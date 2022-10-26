@@ -4,15 +4,10 @@
 #include <vector>
 #include "ECLineSegment.h"
 
-// -----------------------------------------------------------------------------
-// Convex polygon on 2D plane: interface class
-// Note: we assume there is at least three nodes in the polygon (i.e., you don't
-// need to deal with invalid inputs with fewer than three nodes)
-
 class ECAbstractConvexPolygon
 {
 public:
-    ECAbstractConvexPolygon();
+    ECAbstractConvexPolygon(){};
     
     // ordered sequentially (either clockwise or counter clockwise
     ECAbstractConvexPolygon(const std::vector<EC2DPoint> &listNodes);
@@ -38,8 +33,12 @@ public:
     void AddNode(const EC2DPoint &node) { listNodes.push_back(node); }
     
     // Your code here...
-
-    
+    //calculate area of the polygon
+    double CalculateArea(const EC2DPoint &p1, const EC2DPoint &p2, const EC2DPoint &p3) const;
+    bool OnSegment(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
+    bool IsEqual(const ECAbstractConvexPolygon &rhs) const;
+    bool IsIntersect(const ECLineSegment &line1, const ECLineSegment &line2) const;
+    int Direction(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
 private:
     std::vector<EC2DPoint> listNodes;
 };
