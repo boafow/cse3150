@@ -1,10 +1,3 @@
-//
-//  ECLifeSimulator.h
-//  
-//
-//  Created by Yufeng Wu on 10/12/22.
-//
-
 #ifndef ECLifeSimulator_h
 #define ECLifeSimulator_h
 
@@ -12,9 +5,6 @@
 #include <vector>
 #include <map>
 #include <set>
-
-// ********************************************************
-// Life simulator
 
 class ECLifeSimulator
 {
@@ -43,7 +33,8 @@ public:
     double GetVitalityFor(const std::string &orgName) const;
     
 private:
-    // your code here...
+    vector<ECOrganisms *> organisms;
+
 };
 
 #endif /* ECLifeSimulator_h */
