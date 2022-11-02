@@ -1,10 +1,12 @@
 #include "ECLifeSimulator.h"
 #include "ECSpider.h"
+/*
 #include "ECGrasshopper.h"
 #include "ECCaterpillar.h"
 #include "ECMouse.h"
 #include "ECFox.h"
 #include "ECPanda.h"
+*/
 #include <iostream>
 using namespace std;
 
@@ -24,7 +26,7 @@ void Test0()
   cout << "Duration of simulation: " << dur << endl;
   cout << "dodo vitality: " << sim.GetVitalityFor("dodo") << endl;
 }
-
+/*
 // test case 1: one spider, more activities
 void Test1()
 {
@@ -190,9 +192,9 @@ void Test7()
     double dur = sim.Simulate(tmStart, tmLimit);
     cout << "Duration of simulation: " << dur << endl;
 }
-
+*/
 int main()
 {
-  Test5();
+  Test0();
 }
 

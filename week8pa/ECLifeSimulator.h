@@ -5,11 +5,23 @@
 #include <vector>
 #include <map>
 #include <set>
+class ECDailyEvent
+{
+public:
+	double hours;
+	int indexOrganism;
+	int type;
+	int subtype;
+	//ECDailyEvent();
+	//~ECDailyEvent();
+	ECDailyEvent(double hours, int indexOrganism, int type, int subtype):
+		hours(hours), indexOrganism(indexOrganism), type(type), subtype(subtype) {};
+};
 
 class ECLifeSimulator
 {
 public:
-    ECLifeSimulator();
+    ECLifeSimulator(){};
     
     // Initialize the simulation. Clear out all previous inputs (including the organisms)
     void Initialize();
@@ -33,7 +45,9 @@ public:
     double GetVitalityFor(const std::string &orgName) const;
     
 private:
-    vector<ECOrganisms *> organisms;
+    std::vector<ECOrganism *> orgs;
+    std::vector<ECDailyEvent *> events;
+
 
 };
 
