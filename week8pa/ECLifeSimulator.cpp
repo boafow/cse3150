@@ -1,4 +1,5 @@
 #include "ECLifeSimulator.h"
+#include "ECSpider.h"
 #include <algorithm>
 #include <iostream>
 #include <cmath>
@@ -21,6 +22,7 @@ void ECLifeSimulator::AddDailyEvent(double hours, int indexOrganism, int type, i
 
 double ECLifeSimulator::Simulate(double hoursStart, double timeLimit){
 	std::set<std::string> orgsAlive;
+	cout << orgs[0]->name << endl;
 	int countAlive = 0;
 	double currentHours;
 	for(int i = hoursStart; i < timeLimit; ++i){
@@ -55,8 +57,11 @@ void ECLifeSimulator::GetAliveOrganisms(std::set<string> &setAlives) const {
 
 double ECLifeSimulator::GetVitalityFor(const std::string &orgName) const {
 	for(auto org : orgs){
+		cout <<  "name: " << dynamic_cast<ECArthopods *>(org)->name << endl;
+		cout <<  "vitality: " << org->vitality << endl;
+		cout <<  "eatlimit: " << org->eatLimit << endl;
 		if(org->name == orgName){
-			return org->GetVit();
+			return org->vitality;
 		}
 	}
 }

@@ -16,10 +16,6 @@ void ECArthopods::Eat(double hour, int recharge = 0){
 	else if(!IsSleeping(hour)){ vitality += recharge; eatLimit -= 1;}
 }
 
-double ECArthopods::GetVit(){
-	return vitality;
-}
-
 bool ECMammals::IsSleeping(double hour) const {
         //If the hour is among the sleeping hours, then return truei
         if(sleepEnd < sleepStart){
@@ -35,8 +31,3 @@ void ECMammals::Eat(double hour, int recharge = 0){
         //If the animal is not sleeping then eat and reduce eatLimit
         else if(!IsSleeping(hour)){ vitality += recharge; eatLimit -= 1;}
 }
-
-double ECMammals::GetVit(){
-        return vitality;
-}
-

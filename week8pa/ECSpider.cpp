@@ -1,7 +1,7 @@
 #include "ECSpider.h"
 
 
-void ECSpider::Work(double hour, int type){
+void ECSpider::Work(double hour, int type) {
 	if(vitality > 0 && !IsSleeping(hour)){
 		if(type == 0){
 			vitality -= work0;
