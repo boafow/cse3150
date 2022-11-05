@@ -1,19 +1,34 @@
+#include "ECOrganism.h"
 #include "ECSpider.h"
 
-
-void ECSpider::Work(double hour, int type) {
-	if(vitality > 0 && !IsSleeping(hour)){
-		if(type == 0){
+void ECSpider::Work(double hour, int type)
+{
+	if (vitality > 0 && !IsSleeping(hour))
+	{
+		if (type == 0)
+		{
 			vitality -= work0;
-		} else {
-			vitality -= work1;
-			weave(prey);
+		}
+		else
+		{
+			trap(prey);
 		}
 	}
 }
 
-void ECSpider::weave(ECOrganism* rhs){
-	if(rhs == nullptr) return;
-	ECArthopods * arth = dynamic_cast<ECArthopods *>(rhs);
-	if(arth != NULL){ rhs->vitality == 0; }
+void ECSpider::trap(ECOrganism *rhs)
+{
+	if (rhs == nullptr)
+		return;
+	if (rhs != nullptr || rhs->vitality > 0)
+	{
+		if (rhs->species == "grasshopper" ||
+			rhs->species == "spider" ||
+			rhs->species == "caterpilar")
+		{
+			prey = nullptr;
+			rhs->vitality = 0;
+		}
+	}
+	vitality -= work1;
 }

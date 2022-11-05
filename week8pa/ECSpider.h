@@ -4,17 +4,17 @@
 #include <string>
 #include "ECOrganism.h"
 
-class ECSpider: virtual public ECArthopods {
-public:
-	const std::string name;
-	ECArthopods* prey;
-	int work0 = 10;
-	int work1 = 30;
-	int recharge = 20;
-	int eatLimit = 5;
-	ECSpider(const std::string &name, ECArthopods* prey = nullptr): ECArthopods(name), name(name), prey(prey) {};
-	void Work (double hour, int type);
-	void weave(ECOrganism* prey);
-};
+class ECSpider : public ECArthopods
+{
+	ECOrganism *prey;
 
+public:
+	ECSpider(const std::string &name, ECOrganism *prey = nullptr, const std::string &species = "spider", int eatLimit = 5, int sleepStart = 9, int sleepEnd = 17, int recharge = 20, int work0 = 10, int work1 = 30) : 
+	ECArthopods(name, species, eatLimit, sleepStart, sleepEnd, recharge, work0, work1)
+	{
+		this->prey = prey;
+	};
+	void Work(double hour, int type);
+	void trap(ECOrganism *prey);
+};
 #endif /* ECSpider_h */

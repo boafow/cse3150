@@ -1,69 +1,119 @@
 #include "ECLifeSimulator.h"
-#include "ECSpider.h"
+#include "ECOrganism.h"
 #include <algorithm>
 #include <iostream>
 #include <cmath>
 using namespace std;
 
-void ECLifeSimulator::Initialize(){
+//implement operator< for ECDailyEvent
+bool ECDailyEvent::operator<(const ECDailyEvent &rhs) const
+{
+	return hours < rhs.hours;
+}
+
+void ECLifeSimulator::Initialize()
+{
 	orgs.clear();
 	events.clear();
 }
 
-int ECLifeSimulator::AddOrganism(ECOrganism *ptr){
-	orgs.push_back(ptr); //add pointer to organism to orgs
-	return orgs.size()-1; //return index
+int ECLifeSimulator::AddOrganism(ECOrganism *ptr)
+{
+	orgs.push_back(ptr);	// add pointer to organism to orgs
+	return orgs.size() - 1; // return index
 }
 
-void ECLifeSimulator::AddDailyEvent(double hours, int indexOrganism, int type, int subtype) {
+void ECLifeSimulator::AddDailyEvent(double hours, int indexOrganism, int type, int subtype)
+{
 	ECDailyEvent event(hours, indexOrganism, type, subtype);
-	events.push_back(&event);
+	events.push_back(event);
+	std::sort(events.begin(), events.end());
 }
 
-double ECLifeSimulator::Simulate(double hoursStart, double timeLimit){
+double ECLifeSimulator::Simulate(double hoursStart, double timeLimit)
+{
 	std::set<std::string> orgsAlive;
-	cout << orgs[0]->name << endl;
-	int countAlive = 0;
-	double currentHours;
-	for(int i = hoursStart; i < timeLimit; ++i){
-		currentHours = i;
-		for(auto event : events){
-			if(event->type == 0){
-				orgs[event->indexOrganism]->Eat(fmod(currentHours, 24.0));
-			} else {
-				orgs[event->indexOrganism]->Work(fmod(currentHours, 24.0), event->subtype);
+	//cout timestart and timne limit
+	cout << "Time Start: " << hoursStart << endl;
+	cout << "Time Limit: " << timeLimit << endl;
+	double i = 0;
+	for (auto org : orgs)
+	{
+		orgsAlive.insert(org->GetName());
+	}
+
+	//for event in events, cout each attribute
+	for (auto event : events)
+	{
+		cout << orgs[event.indexOrganism]->GetName() << " : " << orgs[event.indexOrganism]->species << 
+		" vitality " << orgs[event.indexOrganism]->vitality << 
+		" hour " << event.hours << 
+		" index " << event.indexOrganism << 
+		" type " << event.type << 
+		" type1 " << event.subtype << endl;
+	}
+
+	while (i + hoursStart < timeLimit)
+	{
+		for (auto event : events)
+		{
+			if (event.hours == fmod(i + hoursStart, 24.0))
+			{
+
+				if (event.type == 0)
+				{
+					//call eat if orgs[event.indexOrganism] eatLimit is not 0
+					if (orgs[event.indexOrganism]->eatLimit != 0)
+					{
+						orgs[event.indexOrganism]->Eat(fmod(i + hoursStart, 24.0), orgs[event.indexOrganism]->recharge);
+						//reduce eatLimit by 1
+						orgs[event.indexOrganism]->eatLimit--;
+					}
+					//cout vitality after eating
+					cout << orgs[event.indexOrganism]->GetName() << " vitality after eating: " << orgs[event.indexOrganism]->vitality << endl;
+				}
+				else
+				{
+					orgs[event.indexOrganism]->Work(fmod(i + hoursStart, 24.0), event.subtype);
+					//cout vitality after working
+					cout << orgs[event.indexOrganism]->GetName() << " vitality after working: " << orgs[event.indexOrganism]->vitality << endl;
+				}
 			}
-			
 		}
-		for(auto org : orgs){
-			if(org->vitality > 0) countAlive += 1;
+		GetAliveOrganisms(orgsAlive);
+		if (orgsAlive.size() == 0)
+		{
+			return i;
 		}
-		if(countAlive == 0){
-			return (currentHours - hoursStart);
-		}
-		
+		i += 0.5;
 	}
-	return (timeLimit - hoursStart);
-}	
 
-void ECLifeSimulator::GetAliveOrganisms(std::set<string> &setAlives) const {
+	return timeLimit;
+}
+
+void ECLifeSimulator::GetAliveOrganisms(std::set<string> &setAlives) const
+{
 	setAlives.clear();
-	for(auto organism : orgs){
-		if(organism->vitality > 0){
-			setAlives.insert(organism->name);
+	for (auto org : orgs)
+	{
+		if (GetVitalityFor(org->GetName()) > 0)
+		{
+			setAlives.insert(org->GetName());
 		}
 	}
 }
 
-double ECLifeSimulator::GetVitalityFor(const std::string &orgName) const {
-	for(auto org : orgs){
-		cout <<  "name: " << dynamic_cast<ECArthopods *>(org)->name << endl;
-		cout <<  "vitality: " << org->vitality << endl;
-		cout <<  "eatlimit: " << org->eatLimit << endl;
-		if(org->name == orgName){
-			return org->vitality;
+double ECLifeSimulator::GetVitalityFor(const std::string &orgName) const
+{
+	for (auto org : orgs)
+	{ 
+		if (org->GetName() == orgName)
+		{
+			if (org->vitality > 0)
+			{
+				return org->vitality;
+			}
 		}
 	}
+	return 0;
 }
-
-

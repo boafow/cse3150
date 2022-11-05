@@ -16,12 +16,16 @@ public:
 	//~ECDailyEvent();
 	ECDailyEvent(double hours, int indexOrganism, int type, int subtype):
 		hours(hours), indexOrganism(indexOrganism), type(type), subtype(subtype) {};
+    bool operator<(const ECDailyEvent& rhs) const;
 };
 
 class ECLifeSimulator
 {
 public:
-    ECLifeSimulator(){};
+    ECLifeSimulator(){ 
+        Initialize(); 
+        
+        };
     
     // Initialize the simulation. Clear out all previous inputs (including the organisms)
     void Initialize();
@@ -46,7 +50,7 @@ public:
     
 private:
     std::vector<ECOrganism *> orgs;
-    std::vector<ECDailyEvent *> events;
+    std::vector<ECDailyEvent> events;
 
 
 };

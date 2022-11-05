@@ -1,20 +1,32 @@
+#include "ECOrganism.h"
 #include "ECMouse.h"
 
-
-void ECMouse::Work(double hour, int type){
-        if(vitality > 0 && !IsSleeping(hour)){
-                if(type == 0){
+void ECMouse::Work(double hour, int type)
+{
+        if (vitality > 0 && !IsSleeping(hour))
+        {
+                if (type == 0)
+                {
                         vitality -= work0;
-                } else {
-                        vitality -= work1;
+                }
+                else
+                {
                         hunt(prey);
                 }
         }
 }
 
-void ECSpider::weave(const ECOrganism *rhs){
-        if(rhs == NULL) return;
-        ECGrasshopper * grasshopper = dynamic_cast<ECGrasshopper *>(rhs);
-        if(grasshopper != NULL){ rhs->vitality == 0; }
+void ECMouse::hunt(ECOrganism *rhs)
+{
+        if (rhs == nullptr)
+                return;
+        if (rhs != nullptr || rhs->vitality > 0)
+        {
+                if (rhs->species == "grasshopper")
+                {
+                        prey = nullptr;
+                        rhs->vitality = 0;
+                }
+        }
+        vitality -= work1;
 }
-
