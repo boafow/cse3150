@@ -20,7 +20,7 @@ public:
 class ECCommandHistory
 {
 public:
-    ECCommandHistory();
+    ECCommandHistory() ;
     virtual ~ECCommandHistory();
     bool Undo();
     bool Redo();
@@ -28,6 +28,7 @@ public:
     
 private:
     std::vector<ECCommand *> cmdHistory;
+    int cmdIndex;
 };
 
 

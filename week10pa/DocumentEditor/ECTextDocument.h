@@ -16,9 +16,57 @@ class ECTextDocument;
 
 // **********************************************************
 // Implements Commands for editing
+class InsertTextCmd : public ECCommand
+{
+    public:
+        InsertTextCmd(ECTextDocument &docIn, int posIn, const std::vector<char> &listCharsToInsIn) : 
+        doc(&docIn), pos(posIn), listCharsToIns(listCharsToInsIn) {}
+        virtual void Execute() override;
+        virtual void UnExecute() override;
+    private:
+        ECTextDocument *doc;
+        int pos;
+        std::vector<char> listCharsToIns;
+};
 
+class RemoveTextCmd : public ECCommand
+{
+    public:
+        RemoveTextCmd(ECTextDocument &docIn, int posIn, int lenToRemoveIn) : 
+        doc(&docIn), pos(posIn), lenToRemove(lenToRemoveIn) {}
+        virtual void Execute() override;
+        virtual void UnExecute() override;
+    private:
+        ECTextDocument *doc;
+        int pos;
+        int lenToRemove;    
+};
 
+class CapTextCmd : public ECCommand
+{
+    public:
+        CapTextCmd(ECTextDocument &docIn, int posIn, int lenToCapIn) : 
+        doc(&docIn), pos(posIn), lenToCap(lenToCapIn) {}
+        virtual void Execute() override;
+        virtual void UnExecute() override;
+    private:
+        ECTextDocument *doc;
+        int pos;
+        int lenToCap;    
+};
 
+class LowerTextCmd : public ECCommand
+{
+    public:
+        LowerTextCmd(ECTextDocument &docIn, int posIn, int lenToLowerIn) : 
+        doc(&docIn), pos(posIn), lenToLower(lenToLowerIn) {}
+        virtual void Execute() override;
+        virtual void UnExecute() override;
+    private:
+        ECTextDocument *doc;
+        int pos;
+        int lenToLower;    
+};
 
 // your code goes here
 
@@ -39,6 +87,7 @@ public:
 
 private:
     ECTextDocument *doc; // the document we are controlling
+    ECCommandHistory cmdHistory; // the command history
 
 };
 

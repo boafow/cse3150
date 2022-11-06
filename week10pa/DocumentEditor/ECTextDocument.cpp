@@ -6,25 +6,7 @@ using namespace std;
 
 // **********************************************************
 // Commands
-
-ECCommand command;
-
-
-// your code goes here
-
-// **********************************************************
-// Controller for text document
-
-ECTextDocumentCtrl ::ECTextDocumentCtrl(ECTextDocument &docIn) : doc(&docIn)
-{
-	// your code goes here
-}
-
-ECTextDocumentCtrl ::~ECTextDocumentCtrl()
-{
-}
-
-void ECTextDocumentCtrl ::InsertTextAt(int pos, const std::vector<char> &listCharsToIns)
+void InsertTextCmd ::Execute()
 {
 	for (auto charToInsert : listCharsToIns)
 	{
@@ -33,40 +15,105 @@ void ECTextDocumentCtrl ::InsertTextAt(int pos, const std::vector<char> &listCha
 	}
 }
 
-void ECTextDocumentCtrl ::RemoveTextAt(int pos, int lenToRemove)
+void InsertTextCmd ::UnExecute()
 {
-	for (int i = 0; i < lenToRemove; ++i)
+	for (int i = 0; i < listCharsToIns.size(); i++)
 	{
 		doc->RemoveCharAt(pos);
 	}
 }
 
-void ECTextDocumentCtrl ::CapTextAt(int pos, int lenToCap)
+void RemoveTextCmd ::Execute()
 {
-	for (int i = 0; i < lenToCap; ++i)
+	for (int i = 0; i < lenToRemove; i++)
+	{
+		doc->RemoveCharAt(pos);
+	}
+}
+
+void RemoveTextCmd ::UnExecute()
+{
+	for (int i = 0; i < lenToRemove; i++)
+	{
+		doc->InsertCharAt(pos, doc->GetCharAt(pos));
+		pos += 1;
+	}
+}
+
+void CapTextCmd ::Execute()
+{
+	for (int i = 0; i < lenToCap; i++)
 	{
 		doc->CapCharAt(pos);
-		++pos;
+		pos += 1;
 	}
+}
+
+void CapTextCmd ::UnExecute()
+{
+	cout << "CapTextCmd::UnExecute() not implemented" << endl;
+}
+
+void LowerTextCmd ::Execute()
+{
+	for (int i = 0; i < lenToLower; i++)
+	{
+		doc->LowerCharAt(pos);
+		pos += 1;
+	}
+}
+
+void LowerTextCmd ::UnExecute()
+{
+	for(int i = 0; i < lenToLower; ++i){
+		doc->CapCharAt(pos + i);
+	}
+}
+// your code goes here
+
+// **********************************************************
+// Controller for text document
+
+ECTextDocumentCtrl ::ECTextDocumentCtrl(ECTextDocument &docIn) : doc(&docIn), cmdHistory()
+{
+}
+
+ECTextDocumentCtrl ::~ECTextDocumentCtrl()
+{
+}
+
+void ECTextDocumentCtrl ::InsertTextAt(int pos, const std::vector<char> &listCharsToIns)
+{
+	InsertTextCmd *pCmd = new InsertTextCmd(*doc, pos, listCharsToIns);
+	cmdHistory.ExecuteCmd(pCmd);
+}
+
+void ECTextDocumentCtrl ::RemoveTextAt(int pos, int lenToRemove)
+{
+	RemoveTextCmd *pCmd = new RemoveTextCmd(*doc, pos, lenToRemove);
+	cmdHistory.ExecuteCmd(pCmd);
+}
+
+void ECTextDocumentCtrl ::CapTextAt(int pos, int lenToCap)
+{
+	CapTextCmd *pCmd = new CapTextCmd(*doc, pos, lenToCap);
+	cmdHistory.ExecuteCmd(pCmd);
 }
 
 void ECTextDocumentCtrl ::LowerTextAt(int pos, int lenToLower)
 {
-	for (int i = 0; i < lenToLower; ++i)
-	{
-		doc->LowerCharAt(pos);
-		++pos;
-	}
+	LowerTextCmd *pCmd = new LowerTextCmd(*doc, pos, lenToLower);
+	cmdHistory.ExecuteCmd(pCmd);
 }
 
 bool ECTextDocumentCtrl ::Undo()
 {
-	return true;
+	return cmdHistory.Undo();
 }
 
 bool ECTextDocumentCtrl ::Redo()
 {
-	return true;
+	return cmdHistory.Redo();
 }
 
 // **********************************************************

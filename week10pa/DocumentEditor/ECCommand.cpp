@@ -3,9 +3,8 @@
 // ******************************************************
 // Implement command history
 
-ECCommandHistory :: ECCommandHistory() 
+ECCommandHistory :: ECCommandHistory(): cmdHistory(), cmdIndex(0)
 {
-  //hello 
 }
 
 ECCommandHistory :: ~ECCommandHistory()
@@ -13,16 +12,40 @@ ECCommandHistory :: ~ECCommandHistory()
   // your code goes here
 }
 
+void ECCommandHistory :: ExecuteCmd( ECCommand *pCmd )
+{
+  cmdIndex = cmdHistory.size();
+
+  pCmd->Execute();
+  cmdHistory.push_back(pCmd);
+
+  cmdIndex++;
+}
+
 bool ECCommandHistory :: Undo()
 {
-  // your code goes here
-  return false;
+  if (cmdIndex == 0)
+  {
+    return false;
+  }
+
+  cmdIndex--;
+  cmdHistory[cmdIndex]->UnExecute();
+
+  return true;
 }
 
 bool ECCommandHistory :: Redo()
 {
-  // your code goes here
-  return false;
+  if (cmdIndex == cmdHistory.size())
+  {
+    return false;
+  }
+
+  cmdHistory[cmdIndex]->Execute();
+  cmdIndex++;
+
+  return true;
 }
 
 

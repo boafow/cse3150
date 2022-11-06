@@ -1,11 +1,3 @@
-//
-//  ECTextDocumentTest.cpp
-//  
-//
-//  Created by Yufeng Wu on 2/26/20.
-//
-//
-
 #include <iostream>
 #include "ECTextDocument.h"
 
