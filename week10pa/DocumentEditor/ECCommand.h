@@ -1,11 +1,3 @@
-//
-//  ECCommand.h
-//  
-//
-//  Created by Yufeng Wu on 2/26/20.
-//
-//
-
 #ifndef ECCommand_h
 #define ECCommand_h
 
@@ -35,7 +27,7 @@ public:
     void ExecuteCmd( ECCommand *pCmd );
     
 private:
-    // your code goes here
+    std::vector<ECCommand *> cmdHistory;
 };
 
 

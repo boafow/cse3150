@@ -1,11 +1,3 @@
-//
-//  ECCommand.cpp
-//  
-//
-//  Created by Yufeng Wu on 2/26/20.
-//
-//
-
 #include "ECCommand.h"
 
 // ******************************************************
@@ -13,12 +5,26 @@
 
 ECCommandHistory :: ECCommandHistory() 
 {
-  // your code goes here
+  //hello 
 }
 
 ECCommandHistory :: ~ECCommandHistory()
 {
   // your code goes here
 }
+
+bool ECCommandHistory :: Undo()
+{
+  // your code goes here
+  return false;
+}
+
+bool ECCommandHistory :: Redo()
+{
+  // your code goes here
+  return false;
+}
+
+
 
 

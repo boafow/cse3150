@@ -29,8 +29,8 @@ static void Test1()
     listText2.push_back('h');
     int posIns = 2;
     docCtrl.InsertTextAt(posIns, listText2);
-    //int lenDel = 2;
-    //docCtrl.RemoveTextAt( posIns, lenDel );
+    int lenDel = 2;
+    docCtrl.RemoveTextAt( posIns, lenDel );
     int posCap = 2;
     int lenCap = 5;
     docCtrl.CapTextAt( posCap, lenCap );
