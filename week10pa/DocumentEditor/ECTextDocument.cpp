@@ -16,7 +16,7 @@ using namespace std;
 
 ECTextDocumentCtrl :: ECTextDocumentCtrl(ECTextDocument &docIn) 
 {
-
+	textDocument = docIn;
 }
 
 ECTextDocumentCtrl :: ~ECTextDocumentCtrl()
@@ -25,22 +25,34 @@ ECTextDocumentCtrl :: ~ECTextDocumentCtrl()
 
 void ECTextDocumentCtrl :: InsertTextAt(int pos, const std::vector<char> &listCharsToIns)
 {
-  // your code
+	for(auto charToInsert : listCharsToIns){
+		textDocument->InsertCharAt(pos, charToInsert);
+		++pos;
+	}
 }
 
 void ECTextDocumentCtrl :: RemoveTextAt(int pos, int lenToRemove)
 {
-  // your code
+	for(int i = 0; i < lenToRemove; ++i){
+		textDocument->RemoveCharAt(pos);
+	}
 }
 
 void ECTextDocumentCtrl :: CapTextAt(int pos, int lenToCap)
 {
-  // your code
+	for(int i = 0; i < lenToCap; ++i){
+                textDocument->CapCharAt(pos);
+		++pos;
+        }
+
 }
 
 void ECTextDocumentCtrl :: LowerTextAt(int pos, int lenToLower)
 {
-  // your code
+	for(int i = 0; i < lenToLower; ++i){
+                textDocument->LowerCharAt(pos);
+                ++pos;
+        }
 }
 
 bool ECTextDocumentCtrl :: Undo()
