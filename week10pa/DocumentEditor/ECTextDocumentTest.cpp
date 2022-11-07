@@ -1,7 +1,7 @@
 #include <iostream>
 #include "ECTextDocument.h"
 
-using namespace  std;
+using namespace std;
 
 static void Test1()
 {
@@ -13,7 +13,7 @@ static void Test1()
     listText1.push_back('b');
     listText1.push_back('c');
     listText1.push_back('d');
-    listText1.push_back('e');
+    listText1.push_back('E');
     docCtrl.InsertTextAt(0, listText1);
     vector<char> listText2;
     listText2.push_back('f');
@@ -22,33 +22,41 @@ static void Test1()
     int posIns = 2;
     docCtrl.InsertTextAt(posIns, listText2);
     int lenDel = 2;
-    docCtrl.RemoveTextAt( posIns, lenDel );
+    docCtrl.RemoveTextAt(posIns, lenDel);
     int posCap = 2;
-    int lenCap = 5;
-    docCtrl.CapTextAt( posCap, lenCap );
-    int posLow = 3;
-    int lenLow = 2;
-    docCtrl.LowerTextAt( posLow, lenLow );
-    
+    int lenCap = 1;
+    docCtrl.CapTextAt(posCap, lenCap);
+    int posLow = 2;
+    int lenLow = 1;
+    docCtrl.LowerTextAt(posLow, lenLow);
+
     cout << "Text: ";
-    for(int i=0; i<doc.GetDocLen(); ++i)
+    for (int i = 0; i < doc.GetDocLen(); ++i)
     {
         cout << doc.GetCharAt(i);
     }
     cout << endl;
-    
+
     // try undo/redo
     docCtrl.Undo();
+    docCtrl.Undo();
+
+    docCtrl.Undo();
+
+    docCtrl.Undo();
+
+    docCtrl.Undo();
+
     cout << "After undo, text: ";
-    for(int i=0; i<doc.GetDocLen(); ++i)
+    for (int i = 0; i < doc.GetDocLen(); ++i)
     {
         cout << doc.GetCharAt(i);
     }
     cout << endl;
-    
+
     docCtrl.Redo();
     cout << "After redo, text: ";
-    for(int i=0; i<doc.GetDocLen(); ++i)
+    for (int i = 0; i < doc.GetDocLen(); ++i)
     {
         cout << doc.GetCharAt(i);
     }
@@ -59,7 +67,6 @@ int main()
 {
     // test code
     Test1();
-    
+
     return 0;
 }
-

@@ -28,7 +28,8 @@ public:
     
 private:
     std::vector<ECCommand *> cmdHistory;
-    int cmdIndex;
+    std::vector<ECCommand *> redoHistory;
+
 };
 
 

@@ -8,66 +8,147 @@ using namespace std;
 // Commands
 void InsertTextCmd ::Execute()
 {
-	for (auto charToInsert : listCharsToIns)
+	for (int i = pos; i < listCharsToIns.size() + pos; i++)
 	{
-		doc->InsertCharAt(pos, charToInsert);
-		pos += 1;
+		doc->InsertCharAt(i, listCharsToIns[i - pos]);
 	}
+
+	//print all chars in doc vector
+	cout << "InsertTextCmd::Execute() - doc vector: ";
+	for (int i = 0; i < doc->GetDocLen(); ++i)
+	{
+		cout << doc->GetCharAt(i);
+	}
+	cout << endl;
+
+	
 }
 
 void InsertTextCmd ::UnExecute()
 {
-	for (int i = 0; i < listCharsToIns.size(); i++)
+		for (int i = 0; i < listCharsToIns.size(); i++)
 	{
 		doc->RemoveCharAt(pos);
 	}
+
+	cout << "InsertTextCmd::Execute() - doc vector: ";
+	for (int i = 0; i < doc->GetDocLen(); ++i)
+	{
+		cout << doc->GetCharAt(i);
+	}
+	cout << endl;
+
+
 }
 
 void RemoveTextCmd ::Execute()
 {
 	for (int i = 0; i < lenToRemove; i++)
 	{
+		listCharsRemoved.push_back(doc->GetCharAt(pos));
 		doc->RemoveCharAt(pos);
 	}
+
+//print all chars in doc vector
+	cout << "RemoveTextCmd::Execute() - doc vector: ";
+	//print pos: pos and lenToRemove
+	cout << "pos: " << pos << " lenToRemove: " << lenToRemove << endl;
+	for (int i = 0; i < doc->GetDocLen(); ++i)
+	{
+		cout << doc->GetCharAt(i);
+	}
+	cout << endl;
+
+	// save the removed chars for unexecute
+	
 }
 
 void RemoveTextCmd ::UnExecute()
 {
-	for (int i = 0; i < lenToRemove; i++)
+
+		for (int i = pos; i < listCharsRemoved.size() + pos; i++)
 	{
-		doc->InsertCharAt(pos, doc->GetCharAt(pos));
-		pos += 1;
+		doc->InsertCharAt(i, listCharsRemoved[i - pos]);
 	}
+
+	cout << "RemoveTextCmd::UnExecute() - doc vector: ";
+	for (int i = 0; i < doc->GetDocLen(); ++i)
+	{
+		cout << doc->GetCharAt(i);
+	}
+	cout << endl;
+
+
 }
 
 void CapTextCmd ::Execute()
 {
-	for (int i = 0; i < lenToCap; i++)
+
+	for (int i = pos; i < lenToCap + pos; i++)
 	{
-		doc->CapCharAt(pos);
-		pos += 1;
+		doc->CapCharAt(i);
 	}
+
+	cout << "CapTextCmd::Execute() - doc vector: ";
+	for (int i = 0; i < doc->GetDocLen(); ++i)
+	{
+		cout << doc->GetCharAt(i);
+	}
+	cout << endl;
+
+	
 }
 
 void CapTextCmd ::UnExecute()
 {
-	cout << "CapTextCmd::UnExecute() not implemented" << endl;
+
+	for (int i = pos; i < lenToCap + pos; i++)
+	{
+		doc->LowerCharAt(i);
+	}
+
+	cout << "CapTextCmd::UnExecute() - doc vector: ";
+	for (int i = 0; i < doc->GetDocLen(); ++i)
+	{
+		cout << doc->GetCharAt(i);
+	}
+	cout << endl;
+
+	
 }
 
 void LowerTextCmd ::Execute()
 {
-	for (int i = 0; i < lenToLower; i++)
+	for (int i = pos; i < lenToLower + pos; i++)
 	{
-		doc->LowerCharAt(pos);
-		pos += 1;
+		doc->LowerCharAt(i);
 	}
+	cout << "LowerTextCmd::Execute() - doc vector: ";
+
+	for (int i = 0; i < doc->GetDocLen(); ++i)
+	{
+		cout << doc->GetCharAt(i);
+	}
+	cout << endl;
+
+	
 }
 
 void LowerTextCmd ::UnExecute()
 {
-	for(int i = 0; i < lenToLower; ++i){
-		doc->CapCharAt(pos + i);
+	for (int i = pos; i < lenToLower + pos; i++)
+	{
+		doc->CapCharAt(i);
 	}
+
+	cout << "LowerTextCmd::UnExecute() - doc vector: ";
+	for (int i = 0; i < doc->GetDocLen(); ++i)
+	{
+		cout << doc->GetCharAt(i);
+	}
+	cout << endl;
+
+	
 }
 // your code goes here
 
@@ -84,13 +165,16 @@ ECTextDocumentCtrl ::~ECTextDocumentCtrl()
 
 void ECTextDocumentCtrl ::InsertTextAt(int pos, const std::vector<char> &listCharsToIns)
 {
+	// print out the characters before the insert
 	InsertTextCmd *pCmd = new InsertTextCmd(*doc, pos, listCharsToIns);
 	cmdHistory.ExecuteCmd(pCmd);
 }
 
 void ECTextDocumentCtrl ::RemoveTextAt(int pos, int lenToRemove)
 {
-	RemoveTextCmd *pCmd = new RemoveTextCmd(*doc, pos, lenToRemove);
+	// create vector for removed chars
+	std::vector<char> listCharsRemoved;
+	RemoveTextCmd *pCmd = new RemoveTextCmd(*doc, pos, lenToRemove, listCharsRemoved);
 	cmdHistory.ExecuteCmd(pCmd);
 }
 
