@@ -1,33 +1,35 @@
 // Code for modeling a university's various units: department, office,
 // college, etc
-
+#include <vector>
 // Generic interface. 
 class ECUnit
 {
 public:
-	double GetBudget() const ...
+	virtual ~ECUnit(){};
+	virtual int GetBudget() const = 0;
+
 };
 
 // Department
 class ECDepartment : public ECUnit
 {
 public:
-	ECDepartment(int b)  ...
-	double GetBudget() const ...
+	ECDepartment(int b) : budget(b) {} 
+	int GetBudget() const { return budget; }
 
 private:
-  ...
+	int budget;
 };
 
 // Office
 class ECOffice : public ECUnit
 {
 public:
-  ECOffice(int b) ...
-  double GetBudget() const ...
+  ECOffice(int b) : budget(b) {}
+  int GetBudget() const { return budget; }
 
 private:
-  ...
+  int budget;
 };
 
 // Composite
@@ -35,20 +37,24 @@ class ECCompositeUnit : public ECUnit
 {
 public:
   ECCompositeUnit()  {}
-  ~ECCompositeUnit()
-  ...
-  
-  double GetBudget() const 
-  { 
-...
+  ~ECCompositeUnit() {
+	for( auto x : listUnits){
+		delete x;
+	}
   }
-  void AddChild(ECUnit *pUnit)
-  {
-...
+  
+  int GetBudget() const {
+	int total = 0;
+	for(auto x : listUnits){
+	       total += x->GetBudget();
+	}
+	return total;	
+  }
+  void AddChild(ECUnit *pUnit) {
+	  listUnits.push_back(pUnit);
   }
 
 private:
-  // your code here
-
+	std::vector<ECUnit *> listUnits;
 };
 
