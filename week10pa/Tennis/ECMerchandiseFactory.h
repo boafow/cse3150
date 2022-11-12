@@ -1,18 +1,8 @@
-//
-//  ECMerchandiseFactory.hpp
-//  
-//
-//  Created by Yufeng Wu on 3/11/20.
-//
-//
-
 #ifndef ECMerchandiseFactory_hpp
 #define ECMerchandiseFactory_hpp
 
 #include "ECMerchandise.h"
 
-// *********************************************************
-// List of vendors
 typedef enum
 {
     TENNIS_ADIDAS = 1,
@@ -20,34 +10,72 @@ typedef enum
     TENNIS_HEAD = 3
 } TENNIS_VENDOR;
 
-// *********************************************************
-// merchandise factory
+// class ECMerchandiseFactory
+// {
+// private:
+//     /* data */
+// public:
+//     ECMerchandiseFactory();
+//     ~ECMerchandiseFactory();
+// };
 
-// your code goes here
+class ECTennisShoe
+{
+public:
+    ECTennisShoe(int size) : mSize(size) {}
+    int GetSize() const { return mSize; }
 
+private:
+    int mSize;
+};
 
-// *********************************************************
-// Merchandise creation: singleton pattern
+class ECTennisBallCan
+{
+public:
+    ECTennisBallCan() {}
+};
+
+class ECTennisBag
+{
+public:
+    ECTennisBag(int racquetCapacity) : mRacquetCapacity(racquetCapacity) {}
+    int GetRacquetCapacity() const { return mRacquetCapacity; }
+
+private:
+    int mRacquetCapacity;
+};
 
 class ECMerchandiseTennisShop
 {
 public:
-    virtual ~ECMerchandiseTennisShop();
-    static ECMerchandiseTennisShop &Instance();
+    virtual ~ECMerchandiseTennisShop(){};
+    static ECMerchandiseTennisShop &Instance()
+    {
+        static ECMerchandiseTennisShop instance;
+        return instance;
+    }
+
     ECTennisShoe *OrderTennisShoe(int sz);
     ECTennisBallCan *OrderTennisBallCan();
     ECTennisBag *OrderTennisBag();
-    void ChooseVendor(TENNIS_VENDOR vendor);
-    int GetNumShoesSold() const;
-    int GetNumBallcansSold() const;
-    int GetNumBagsSold() const;
-    int GetTotNumBallsSold() const;
-    int GetTotRacquetBagCapaictySold() const;
-    int GetTotRevenue() const;
-    
-private:
-    // your code goes here
-};
 
+    void ChooseVendor(TENNIS_VENDOR vendor) { mVendor = vendor; }
+    int GetNumShoesSold() const { return mNumShoesSold; };
+    int GetNumBallcansSold() const { return mNumBallCansSold; };
+    int GetNumBagsSold() const { return mNumBagsSold; };
+    int GetTotNumBallsSold() const { return mTotNumBallsSold; };
+    int GetTotRacquetBagCapaictySold() const { return mTotRacquetBagCapaictySold; };
+    int GetTotRevenue() const { return mTotRevenue; };
+
+private:
+    ECMerchandiseTennisShop(){ mVendor = TENNIS_ADIDAS; };
+    TENNIS_VENDOR mVendor;
+    int mNumShoesSold;
+    int mNumBallCansSold;
+    int mNumBagsSold;
+    int mTotNumBallsSold;
+    int mTotRacquetBagCapaictySold;
+    int mTotRevenue;
+};
 
 #endif /* ECMerchandiseFactory_hpp */
