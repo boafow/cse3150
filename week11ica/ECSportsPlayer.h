@@ -1,7 +1,10 @@
 #ifndef _EC_SPORTS_PLAYER_H
 #define _EC_SPORTS_PLAYER_H
 
-class ECTournament {
+// ********************************************
+// Sports Tournament
+class ECTournament
+{
 public:
   ECTournament(int mon, int mr) : month(mon), minRank(mr) {}
   int GetMonth() const { return month; }
@@ -12,67 +15,109 @@ private:
   int minRank;
 };
 
-class ECSportsPlayer {
+// ********************************************
+// Generic player
+class ECSportsPlayer
+{
 public:
-  virtual bool CanPlay(ECTournament &tr) const {
-	  if(IsNotQualified()){
-		  return false;
-	  } else {
-		  return isQualified();
-	  }
-  }
-
-  virtual bool isQualified() const {
-  	return false;
-  }
-
-  virtual bool isNotQualified(ECTournament &tr) const {
-	return false;
-  }
+    virtual bool CanPlay(ECTournament &tr) const
+    {
+        return false;
+    }
+    //return true if exits a positivce rule saying can play
+    virtual bool isQualified (ECTournament &tr)const
+    {
+        return false;
+    }
+    
+    //return true if exits a negative rule saying cannot play
+    virtual bool notQualified (ECTournament &tr)const
+    {
+        return false;
+    }
 };
 
-class ECSportsPlayerRanked : public ECSportsPlayer {
+// ********************************************
+// Ranked player
+class ECSportsPlayerRanked : public ECSportsPlayer
+{
 public:
-  ECSportsPlayerRanked(int r): rank(r) {};
-  virtual bool CanPlay(ECTournament &tr) const { return rank >= tr.GetMinRank(); }
+    ECSportsPlayerRanked(int r) : rank(r){}
+    
+    bool CanPlay(ECTournament &tr) const
+    {
+        return rank <= tr.GetMinRank();
+    }
+
 private:
-  int rank;
+    int rank;
 };
 
-
-//Decorator Pattern
-class ECSportsPlayerDec : public ECSportsPlayer {
+//decorator pattern
+class ECSportsPlayerDec : public ECSportsPlayer
+{
 public:
-	ECSportsPlayerDec( ECSportsPlayer &player );
-	virtual bool IsQualified() { return player.IsQualified(); }
+    ECSportsPlayerDec(ECSportsPlayer &_player): player(_player){}
+    virtual bool isQualified (ECTournament &tr)const
+    {
+        return player.isQualified(tr);
+    }
+    
+    //return true if exits a negative rule saying cannot play
+    virtual bool notQualified (ECTournament &tr)const
+    {
+        return player.notQualified(tr);
+    }
 private:
-	ECSportsPlayer & player;
-
-}
-
-class ECSportsPlayerWildcard : public ECSportsPlayerDec {
-public:
-       	ECSportsPlayerWildcard(ECSportsPlayer &playerOrig): ECSportsPlayer(playerOrig) {};
-
+    ECSportsPlayer &player;
+    
 };
 
+// ********************************************
+// Wildcard player: qualify for any tournament 
+class ECSportsPlayerWildcard : public ECSportsPlayerDec
+{
+public:
+    ECSportsPlayerWildcard(ECSportsPlayer &playerOrig) : ECSportsPlayerDec(playerOrig){}
+    virtual bool CanPlay(ECTournament &tr) const
+    {
+        return true;
+    }
+    virtual bool isQualified (ECTournament &tr)const
+    {
+        return true;
+    }
+};
+
+// ********************************************
+// *******************************************
+// Displined player: cannot attend any tournament during the period of probation
 class ECSportsPlayerDisciplined : public ECSportsPlayerDec
 {
 public:
-  ECSportsPlayerDisciplined(ECSportsPlayer &playerOrig, int mStart, int mEnd): ECSportsPlayerDec(playerOrig), mStart(mStart), mEnd(mEnd) {};
+    ECSportsPlayerDisciplined(ECSportsPlayer &playerOrig, int mStart, int mEnd):ECSportsPlayerDec(playerOrig), start(mStart), end(mEnd){};
+    virtual bool CanPlay(ECTournament &tr) const
+    {
+        return (tr.GetMonth()<start || tr.GetMonth() >end);
+    }
 
 private:
-  ECSportsPlayer &playerOrig;
-  int mStart;
-  int mEnd;
-
+    int start;
+    int end;
 };
 
-class ECSportsPlayerInjured : public ECSportsPlayerDec {
+// ********************************************
+// Injured player: cannot attend any tournament during the period of injury(injury occurs at a single month) 
+class ECSportsPlayerInjured : public ECSportsPlayerDec
+{
 public:
-  ECSportsPlayerInjured(ECSportsPlayer &playerOrig, int m);
-
+    ECSportsPlayerInjured(ECSportsPlayer &playerOrig, int m) : ECSportsPlayerDec(playerOrig), month(m){}
+    virtual bool CanPlay(ECTournament &tr) const
+    {
+        return (!(month == tr.GetMonth()));
+    }
 private:
+    int month;
 };
 
 #endif

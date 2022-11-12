@@ -12,7 +12,7 @@ public:
 // Room with a bomb
 class RoomWithBomb : public Room {
 public:
-       virtual int GetPrize(){
+       virtual int GetPrize() const {
            return -10;
    }
 
@@ -22,7 +22,7 @@ public:
 class EnchantedRoom: public Room
 {
 public:
-  virtual int GetPrize(){ return 20; }
+  virtual int GetPrize() const { return 20; }
 };
 
 // maze game
