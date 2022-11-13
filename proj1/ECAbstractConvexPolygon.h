@@ -8,9 +8,7 @@ class ECAbstractConvexPolygon
 {
 public:
     ECAbstractConvexPolygon(){};
-    
-    // ordered sequentially (either clockwise or counter clockwise
-    ECAbstractConvexPolygon(const std::vector<EC2DPoint> &listNodes);
+    ECAbstractConvexPolygon(const std::vector<EC2DPoint> &listNodes): listNodes(listNodes){};
     
     // Test if the polygon is convex? Return false if not
     // NOTE: ALL OTHER METHODS OF THIS CLASS ASSUME THE POLYGON IS CONVEX
@@ -33,13 +31,9 @@ public:
     void AddNode(const EC2DPoint &node) { listNodes.push_back(node); }
     
     // Your code here...
-    //calculate area of the polygon
-    double CalculateArea(const EC2DPoint &p1, const EC2DPoint &p2, const EC2DPoint &p3) const;
-    bool OnSegment(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
-    bool IsEqual(const ECAbstractConvexPolygon &rhs) const;
-    bool IsIntersect(const ECLineSegment &line1, const ECLineSegment &line2) const;
     double CrossProduct(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
-private:
+
+protected:
     std::vector<EC2DPoint> listNodes;
 };
 
