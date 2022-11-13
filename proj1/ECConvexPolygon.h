@@ -12,8 +12,7 @@ public:
     virtual bool IsConvex() const;
     virtual double GetArea() const;
     //implement direction of the line
-    double CrossProduct(double ax, double ay, double bx, double by, double cx, double cy) const;
-
+    virtual double CrossProduct(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
 private:
     std::vector<EC2DPoint> nodes;
 };

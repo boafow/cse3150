@@ -2,46 +2,41 @@
 #include <cmath>
 using namespace std;
 
-//constructor
-ECConvexPolygon::ECConvexPolygon(const std::vector<EC2DPoint> &nodes){
-    for(auto node : nodes){
-        this->AddNode(node);
-    }
+// constructor
+ECConvexPolygon::ECConvexPolygon(const std::vector<EC2DPoint> &nodes): ECAbstractConvexPolygon(nodes)
+{
+    this->nodes = nodes;
 }
 
-double ECConvexPolygon::CrossProduct(double ax, double ay, double bx, double by, double cx, double cy) const
+double ECConvexPolygon::CrossProduct(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const
 {
-        int BAx = ax - bx;
-        int BAy = ay - by;
-        int BCx = cx - bx;
-        int BCy = cy - by;
-        return (BAx * BCy - BAy * BCx);
+    return ((pj.GetX() - pi.GetX()) * (pk.GetY() - pi.GetY())) - ((pk.GetX() - pi.GetX()) * (pj.GetY() - pi.GetY()));
 }
 
 bool ECConvexPolygon::IsConvex() const
 {
-
-    int N = nodes.size();
- 
     double prev = 0;
- 
     double curr = 0;
- 
-    for (int i = 0; i < N; i++) {
+    int N = nodes.size();
 
-        vector<EC2DPoint> temp
-            = { nodes[i],
-                nodes[(i + 1) % N],
-                nodes[(i + 2) % N] };
- 
-        curr = CrossProduct(nodes[i].GetX(), nodes[i].GetY(), nodes[(i + 1) % N].GetX(), nodes[(i + 1) % N].GetY(), nodes[(i + 2) % N].GetX(), nodes[(i + 2) % N].GetY());
- 
-        if (curr != 0) {
- 
-            if (curr * prev < 0) {
+    for (int i = 0; i < N; i++)
+    {
+
+        int a = i;
+        int b = (i + 1) % N;
+        int c = (i + 2) % N;
+
+        curr = CrossProduct(nodes[a], nodes[b], nodes[c]);
+
+        if (curr != 0)
+        {
+
+            if (curr * prev < 0)
+            {
                 return false;
             }
-            else {
+            else
+            {
                 prev = curr;
             }
         }
@@ -51,11 +46,11 @@ bool ECConvexPolygon::IsConvex() const
 
 double ECConvexPolygon::GetArea() const
 {
-        double totalArea = 0;
-        for (int i = 0; i < nodes.size(); i++)
-        {
-                int j = (i + 1) % nodes.size();
-                totalArea += nodes[i].GetX() * nodes[j].GetY() - nodes[j].GetX() * nodes[i].GetY();
-        }
-        return abs(totalArea / 2);
+    double totalArea = 0;
+    for (int i = 0; i < nodes.size(); i++)
+    {
+        int j = (i + 1) % nodes.size();
+        totalArea += nodes[i].GetX() * nodes[j].GetY() - nodes[j].GetX() * nodes[i].GetY();
+    }
+    return abs(totalArea / 2);
 }

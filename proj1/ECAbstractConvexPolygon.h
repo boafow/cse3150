@@ -38,7 +38,7 @@ public:
     bool OnSegment(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
     bool IsEqual(const ECAbstractConvexPolygon &rhs) const;
     bool IsIntersect(const ECLineSegment &line1, const ECLineSegment &line2) const;
-    int Direction(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
+    double CrossProduct(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
 private:
     std::vector<EC2DPoint> listNodes;
 };

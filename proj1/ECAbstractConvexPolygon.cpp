@@ -13,10 +13,10 @@ bool ECAbstractConvexPolygon::IsPointInside(const EC2DPoint &pt) const{
 	double before = 0;
 	double current = 0;
 	int n = listNodes.size();
-	for(int i = 0; i < n ++i){
+	for(int i = 0; i < n; ++i){
 		int a = i;
 		int b = (i + 1) % n;
-		current = Direction(pt, listNodes[a], listNodes[b]);
+		current = CrossProduct(pt, listNodes[a], listNodes[b]);
 		if(current != 0){
 			if(current * before < 0){
 				return false;
@@ -25,6 +25,7 @@ bool ECAbstractConvexPolygon::IsPointInside(const EC2DPoint &pt) const{
 			}
 		}
 	}
+	return true;
 }
 //onsesgment function
 bool ECAbstractConvexPolygon::OnSegment(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const{
@@ -98,3 +99,9 @@ bool ECAbstractConvexPolygon::IsIntersecting(const ECAbstractConvexPolygon &rhs)
 	return false;
 }
 
+
+double ECAbstractConvexPolygon::CrossProduct(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const{
+	//return cross product
+	double crossProduct = (pk.GetY() - pi.GetY()) * (pj.GetX() - pi.GetX()) - (pj.GetY() - pi.GetY()) * (pk.GetX() - pi.GetX());
+	return crossProduct;
+}
