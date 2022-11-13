@@ -10,33 +10,21 @@ ECAbstractConvexPolygon::ECAbstractConvexPolygon(const std::vector<EC2DPoint> &l
 	}
 }    
 bool ECAbstractConvexPolygon::IsPointInside(const EC2DPoint &pt) const{
-	//calculate area with pt and each pair of nodes
-
-	//check if pt.getx and pt.gety is equal to any of the nodes
-	for (int i = 0; i < listNodes.size(); i++) {
-		if (pt.GetX() == listNodes[i].GetX() && pt.GetY() == listNodes[i].GetY()) {
-			return true;
+	double before = 0;
+	double current = 0;
+	int n = listNodes.size();
+	for(int i = 0; i < n ++i){
+		int a = i;
+		int b = (i + 1) % n;
+		current = Direction(pt, listNodes[a], listNodes[b]);
+		if(current != 0){
+			if(current * before < 0){
+				return false;
+			} else {
+				before = current;
+			}
 		}
 	}
-
-	//check if pt is on line between any two nodes, if so return true
-	for (int i = 0; i < listNodes.size(); i++) {
-		int j = (i + 1) % listNodes.size();
-		if (OnSegment(listNodes[i], listNodes[j], pt)) {
-			return true;
-		}
-	}
-	
-	double totalArea = 0;
-	for (int i = 0; i < listNodes.size(); i++){
-		//calculate area of the triangle
-		totalArea += CalculateArea(pt, listNodes[i], listNodes[(i+1)%listNodes.size()]);
-	}
-	//if the total area is equal to the polygon area, then the point is inside
-	if (totalArea == GetArea()){
-		return true;
-	}
-	return false;
 }
 //onsesgment function
 bool ECAbstractConvexPolygon::OnSegment(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const{
