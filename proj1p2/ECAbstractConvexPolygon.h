@@ -34,9 +34,9 @@ public:
     // Your code here...
     double CrossProduct(const EC2DPoint &pi, const EC2DPoint &pj, const EC2DPoint &pk) const;
 
-    void GetCenter(double &xc, double &yc) const;
+    virtual void GetCenter(double &xc, double &yc) const;
 
-    void GetBoundingBox( double &xUpperLeft, double &yUpperLeft, double &xLowerRight, double &yLowerRight ) const;
+    virtual void GetBoundingBox( double &xUpperLeft, double &yUpperLeft, double &xLowerRight, double &yLowerRight ) const;
 
 protected:
     std::vector<EC2DPoint> listNodes;

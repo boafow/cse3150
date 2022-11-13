@@ -67,31 +67,41 @@ double ECAbstractConvexPolygon::CrossProduct(const EC2DPoint &pi, const EC2DPoin
 	return (pk.GetY() - pi.GetY()) * (pj.GetX() - pi.GetX()) - (pj.GetY() - pi.GetY()) * (pk.GetX() - pi.GetX());
 }
 
-void ECAbstractConvexPolygon::GetBoundingBox(double &xUpperLeft, double &yUpperLeft, double &xLowerRight, double &yLowerRight) const{
-	xUpperLeft = listNodes[0].GetX();
-	yUpperLeft = listNodes[0].GetY();
-	xLowerRight = listNodes[0].GetX();
-	yLowerRight = listNodes[0].GetY();
-
+//bounding box
+void ECAbstractConvexPolygon::GetBoundingBox( double &xUpperLeft, double &yLowerRight, double &xLowerRight, double &yUpperLeft ) const{
+	double xMin = listNodes[0].GetX();
+	double xMax = listNodes[0].GetX();
+	double yMin = listNodes[0].GetY();
+	double yMax = listNodes[0].GetY();
 	for (int i = 1; i < listNodes.size(); i++) {
-		if (listNodes[i].GetX() < xUpperLeft) {
-			xUpperLeft = listNodes[i].GetX();
+		if (listNodes[i].GetX() < xMin) {
+			xMin = listNodes[i].GetX();
 		}
-		if (listNodes[i].GetY() > yUpperLeft) {
-			yUpperLeft = listNodes[i].GetY();
+		if (listNodes[i].GetX() > xMax) {
+			xMax = listNodes[i].GetX();
 		}
-		if (listNodes[i].GetX() > xLowerRight) {
-			xLowerRight = listNodes[i].GetX();
+		if (listNodes[i].GetY() < yMin) {
+			yMin = listNodes[i].GetY();
 		}
-		if (listNodes[i].GetY() < yLowerRight) {
-			yLowerRight = listNodes[i].GetY();
+		if (listNodes[i].GetY() > yMax) {
+			yMax = listNodes[i].GetY();
 		}
 	}
+	xUpperLeft = xMin;
+	yUpperLeft = yMax;
+	xLowerRight = xMax;
+	yLowerRight = yMin;
+
+	//print out values of bounding box
+	cout << "Bounding Box: " << endl;
+	cout << "Upper Left: (x: " << xUpperLeft << ", y: " << yUpperLeft << ")" << endl;
+	cout << "Lower Right: (x: " << xLowerRight << ", y: " << yLowerRight << ")" << endl;
+
 }
 
 void ECAbstractConvexPolygon::GetCenter(double &xc, double &yc) const{
-	double xUpperLeft, yUpperLeft, xLowerRight, yLowerRight;
-	GetBoundingBox(xUpperLeft, yUpperLeft, xLowerRight, yLowerRight);
-	xc = (xUpperLeft + xLowerRight) / 2;
-	yc = (yUpperLeft + yLowerRight) / 2;
+	double xUpperLeft, xLowerRight, yUpperLeft, yLowerRight;
+    GetBoundingBox(xUpperLeft, xLowerRight, yUpperLeft, yLowerRight);
+    xc = (xUpperLeft + yUpperLeft) / 2;
+    yc = (xLowerRight + yLowerRight) / 2;
 }

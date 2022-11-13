@@ -1,16 +1,23 @@
 #include "ECCircle.h"
+#include <iostream>
 #include <cmath>
 using namespace std;
 
 //*************************************************************************************
 // Circle
 
-void ECCircle::GetBoundingBox(double &xMin, double &xMax, double &yMin, double &yMax) const
+void ECCircle::GetBoundingBox(double &xUpperLeft, double &yLowerRight, double &xLowerRight, double &yUpperLeft) const
 {
-    xMin = xcenter - radius;
-    xMax = xcenter + radius;
-    yMin = ycenter - radius;
-    yMax = ycenter + radius;
+    xUpperLeft = xcenter - radius;
+    yUpperLeft = ycenter + radius;
+    xLowerRight = xcenter + radius;
+    yLowerRight = ycenter - radius;
+
+    //print out the bounding box
+    cout << "Bounding Box: " << endl;
+	cout << "Upper Left: (x: " << xUpperLeft << ", y: " << yUpperLeft << ")" << endl;
+	cout << "Lower Right: (x: " << xLowerRight << ", y: " << yLowerRight << ")" << endl;
+
 }
 
 bool ECCircle::IsPointInside(const EC2DPoint &p) const
@@ -26,10 +33,10 @@ bool ECCircle::IsPointInside(const EC2DPoint &p) const
 
 void ECCircle::GetCenter(double &xc, double &yc) const
 {
-    double xMin, xMax, yMin, yMax;
-    GetBoundingBox(xMin, xMax, yMin, yMax);
-    xc = (xMin + xMax) / 2;
-    yc = (yMin + yMax) / 2;
+    double xUpperLeft, xLowerRight, yUpperLeft, yLowerRight;
+    GetBoundingBox(xUpperLeft, xLowerRight, yUpperLeft, yLowerRight);
+    xc = (xUpperLeft + yUpperLeft) / 2;
+    yc = (xLowerRight + yLowerRight) / 2;
 }
 
 double ECCircle::GetArea() const
@@ -42,12 +49,17 @@ double ECCircle::GetArea() const
 
 // your code here
 
-void ECEllipse::GetBoundingBox(double &xMin, double &xMax, double &yMin, double &yMax) const
+void ECEllipse::GetBoundingBox(double &xUpperLeft, double &yLowerRight, double &xLowerRight, double &yUpperLeft) const
 {
-    xMin = xcenter - radiusx;
-    xMax = xcenter + radiusx;
-    yMin = ycenter - radiusy;
-    yMax = ycenter + radiusy;
+    xUpperLeft = xcenter - radiusx;
+    yUpperLeft = ycenter + radiusy;
+    xLowerRight = xcenter + radiusx;
+    yLowerRight = ycenter - radiusy;
+
+    //print out the bounding box
+    cout << "Bounding Box: " << endl;
+    cout << "Upper Left: (x: " << xUpperLeft << ", y: " << yUpperLeft << ")" << endl;
+    cout << "Lower Right: (x: " << xLowerRight << ", y: " << yLowerRight << ")" << endl;
 }
 
 bool ECEllipse::IsPointInside(const EC2DPoint &p) const
@@ -62,12 +74,13 @@ bool ECEllipse::IsPointInside(const EC2DPoint &p) const
     return (x - x0) * (x - x0) / (rx * rx) + (y - y0) * (y - y0) / (ry * ry) <= 1;
 }
 
+//get the center of the bounding box using the GetBoundingBox function and xUpperLeft, xLowerRight, yUpperLeft, yLowerRight
 void ECEllipse::GetCenter(double &xc, double &yc) const
 {
-    double xMin, xMax, yMin, yMax;
-    GetBoundingBox(xMin, xMax, yMin, yMax);
-    xc = (xMin + xMax) / 2;
-    yc = (yMin + yMax) / 2;
+    double xUpperLeft, xLowerRight, yUpperLeft, yLowerRight;
+    GetBoundingBox(xUpperLeft, xLowerRight, yUpperLeft, yLowerRight);
+    xc = (xUpperLeft + yUpperLeft) / 2;
+    yc = (xLowerRight + yLowerRight) / 2;
 }
 
 double ECEllipse::GetArea() const
