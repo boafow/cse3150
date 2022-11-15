@@ -1,18 +1,3 @@
-//
-//  ECGraphicViewImp.h
-//  
-//
-//  Created by Yufeng Wu on 3/2/22.
-//
-
-//***********************************************************
-//          GraphicView version 1.0.0 alpha
-//                  March 2, 2022
-//                  By Yufeng Wu (all rights reserved)
-//    Disclaimer: this code builts on Allegro game engine
-//
-//***********************************************************
-
 #ifndef ECGraphicViewImp_h
 #define ECGraphicViewImp_h
 

@@ -18,10 +18,16 @@ ECTrendingNews :: ~ECTrendingNews()
 // add a subscriber
 void ECTrendingNews :: Subscribe(ECSubscriber *pSub)
 {
+	subscribers.push_back(pSub);
 }
 // remove a subscriber
 void ECTrendingNews :: UnSubscribe(ECSubscriber *pSub)
 {
+	for(int i = 0; i < subscribers.size(); ++i){
+		if(pSub == subscribers[i]){
+			subscribers.erase(subscribers.begin()+i);
+		}
+	}
 }
 // Notify news is available for view
 void ECTrendingNews :: Notify()
