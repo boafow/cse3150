@@ -3,6 +3,8 @@
 
 #include <vector>
 
+class ECTrendingNews;
+
 // Subscriber interface. DON'T CHANGE THIS
 class ECSubscriber
 {
@@ -13,16 +15,25 @@ public:
 };
 
 // pay-per click subscriber
-class ECPayPerClickSubscriber 
+class ECPayPerClickSubscriber: public ECSubscriber 
 {
+	ECTrendingNews &tn;
 public:
+	ECPayPerClickSubscriber( ECTrendingNews &tn): tn(tn) {};
+	virtual void Update();
+        virtual int ContractCost() const { return 0; }
+
 
 };
 
 // Contract subscriber
-class ECContractSubscriber 
+class ECContractSubscriber : public ECSubscriber
 {
+	ECTrendingNews &tn;
 public:
+	ECContractSubscriber( ECTrendingNews &tn): tn(tn) {};
+	virtual void Update() { /* read the news*/ } 
+        virtual int ContractCost() const { return 100; }
 
 };
 
@@ -30,7 +41,7 @@ public:
 class ECTrendingNews
 {
 public:
-	ECTrendingNews();
+	ECTrendingNews(): totalRevenue(0) { subscribers.clear(); }
 	~ECTrendingNews();
 	// add a subscriber
 	void Subscribe(ECSubscriber *pSub);
@@ -39,7 +50,7 @@ public:
 	// Notify news is available for view
 	void Notify();
 	// receive payment (assume in whole dollar)
-	void ReceivePayment(int amount);
+	void ReceivePayment(int amount) { totalRevenue += amount; }
 	// Get total revenue received
 	int GetTotRevenue() const;
 	

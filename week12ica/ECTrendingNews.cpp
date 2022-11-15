@@ -2,15 +2,11 @@
 
 // Your code goes here
 // pay-per click subscriber
-ECPayPerClickSubscriber 
-
-// Contract subscriber
-ECContractSubscriber 
+void ECPayPerClickSubscriber::Update(){
+       tn.ReceivePayment(1);
+}       
 
 // This is the subject
-ECTrendingNews :: ECTrendingNews()
-{
-}
 ECTrendingNews :: ~ECTrendingNews()
 {
 }
@@ -19,6 +15,7 @@ ECTrendingNews :: ~ECTrendingNews()
 void ECTrendingNews :: Subscribe(ECSubscriber *pSub)
 {
 	subscribers.push_back(pSub);
+	ReceivePayment(pSub->ContractCost());
 }
 // remove a subscriber
 void ECTrendingNews :: UnSubscribe(ECSubscriber *pSub)
@@ -32,11 +29,11 @@ void ECTrendingNews :: UnSubscribe(ECSubscriber *pSub)
 // Notify news is available for view
 void ECTrendingNews :: Notify()
 {
+	for(auto pSub : subscribers){
+		pSub->Update();
+	}
 }
-// receive payment (assume in whole dollar)
-void ECTrendingNews :: ReceivePayment(int amount)
-{
-}
+
 // Get total revenue received
 int ECTrendingNews :: GetTotRevenue() const 
 {
