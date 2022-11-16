@@ -8,7 +8,10 @@ int real_main(int argc, char **argv)
 {
   const int widthWin = 500, heightWin = 500;
   ECGraphicViewImp view(widthWin, heightWin);
+  
   view.Show();
+  
+  
   return 0;
 }
 

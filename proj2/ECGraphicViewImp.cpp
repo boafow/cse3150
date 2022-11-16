@@ -1,3 +1,10 @@
+//
+//  ECGraphicViewImp.cpp
+//  
+//
+//  Created by Yufeng Wu on 3/2/22.
+//
+
 #include "ECGraphicViewImp.h"
 #include "allegro5/allegro_primitives.h"
 #include <allegro5/allegro_image.h>
@@ -7,6 +14,7 @@ using namespace std;
 
 const float FPS = 60;
 
+//***********************************************************
 // Allegro colors
 
 ALLEGRO_COLOR arrayAllegroColors[ECGV_NUM_COLORS] =
@@ -21,6 +29,7 @@ ALLEGRO_COLOR arrayAllegroColors[ECGV_NUM_COLORS] =
     al_map_rgb_f(0,255,255)
 };
 
+//***********************************************************
 // A graphic view implementation
 // This is built on top of Allegro library
 
@@ -58,7 +67,8 @@ void ECGraphicViewImp :: Show()
         RenderStart();
         
         // draw something
-        //DrawRectangle(100,100,200,200,3);
+        //DrawRectangle(100, 100, 400, 400);
+        //SetRedraw(true);
         
         // Notify clients
         Notify();
@@ -183,6 +193,7 @@ cout << "Start init..\n";
     
     // init image
     al_init_image_addon();
+    al_init_primitives_addon();
     
 cout << "Done with initialization.\n";
 }
