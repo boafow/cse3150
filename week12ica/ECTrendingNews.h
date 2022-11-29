@@ -21,7 +21,7 @@ class ECPayPerClickSubscriber: public ECSubscriber
 public:
 	ECPayPerClickSubscriber( ECTrendingNews &tn): tn(tn) {};
 	virtual void Update();
-        virtual int ContractCost() const { return 0; }
+    virtual int ContractCost() const { return 0; }
 
 
 };
@@ -33,7 +33,7 @@ class ECContractSubscriber : public ECSubscriber
 public:
 	ECContractSubscriber( ECTrendingNews &tn): tn(tn) {};
 	virtual void Update() { /* read the news*/ } 
-        virtual int ContractCost() const { return 100; }
+    virtual int ContractCost() const { return 100; }
 
 };
 

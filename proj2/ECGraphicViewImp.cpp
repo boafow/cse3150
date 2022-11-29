@@ -67,8 +67,8 @@ void ECGraphicViewImp :: Show()
         RenderStart();
         
         // draw something
-        //DrawRectangle(100, 100, 400, 400);
-        //SetRedraw(true);
+        // DrawRectangle(100, 100, 400, 400);
+        // SetRedraw(true);
         
         // Notify clients
         Notify();
@@ -323,7 +323,7 @@ void ECGraphicViewImp :: GetCursorPosition(int &cx, int &cy) const
 }
 
 // Drawing functions
-void  ECGraphicViewImp :: DrawLine(int x1, int y1, int x2, int y2, int thickness, ECGVColor color)
+void ECGraphicViewImp :: DrawLine(int x1, int y1, int x2, int y2, int thickness, ECGVColor color)
 {
     // draw a line
     al_draw_line(x1,y1,x2,y2,arrayAllegroColors[color],thickness);
