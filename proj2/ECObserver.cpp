@@ -1,122 +1,122 @@
 #include "ECObserver.h"
 #include "ECGraphicViewImp.h"
 
-ECCommandHistory::~ECCommandHistory()
+ModeObserver::ModeObserver(ECObserverSubject *view)
 {
-    for (auto cmd : cmdHistory)
-    {
-        delete cmd;
-    }
-}
-void ECCommandHistory::AddCommand(ECCommand *cmd)
-{
-    cmdHistory.push_back(cmd);
-    currCmdIndex++;
-}
-bool ECCommandHistory::Undo()
-{
-    if (currCmdIndex < 0)
-    {
-        return false;
-    }
-    cmdHistory[currCmdIndex]->Unexecute();
-    --currCmdIndex;
-    return true;
-}
-bool ECCommandHistory::Redo()
-{
-    if (currCmdIndex >= cmdHistory.size() - 1)
-    {
-        return false;
-    }
-    ++currCmdIndex;
-    cmdHistory[currCmdIndex]->Execute();
-    return true;
-}
-void ECCommandHistory::ExecuteCmd(ECCommand *cmd)
-{
-    cmdHistory[currCmdIndex]->Execute();
-    if (currCmdIndex >= -1)
-    {
-        int listSize = cmdHistory.size();
-        for (int i = currCmdIndex + 1; i < listSize; i++)
-        {
-            delete cmdHistory[i];
-            cmdHistory.pop_back();
-        }
-    }
-    cmdHistory.push_back(cmd);
-    ++currCmdIndex;
+    this->view = view;
+    view->Attach(this);
 }
 
-MouseDownCommand::MouseDownCommand(ECGraphicModelImp &model) : model(model) {}
-void MouseDownCommand::Execute()
+DObserver::DObserver(ECObserverSubject *view)
 {
-    // model.MouseDown();
-}
-void MouseDownCommand::Unexecute()
-{
-    // model.MouseUp();
+    this->view = view;
+    view->Attach(this);
 }
 
-ECMouseDownObserver::ECMouseDownObserver(ECObserverSubject *view)
+ZObserver::ZObserver(ECObserverSubject *view)
 {
     this->view = view;
-}
-ECMouseUpObserver::ECMouseUpObserver(ECObserverSubject *view)
-{
-    this->view = view;
-}
-ECMouseMoveObserver::ECMouseMoveObserver(ECObserverSubject *view)
-{
-    this->view = view;
-}
-ECKeyDownObserver::ECKeyDownObserver(ECObserverSubject *view)
-{
-    this->view = view;
-}
-ECKeyUpObserver::ECKeyUpObserver(ECObserverSubject *view)
-{
-    this->view = view;
+    view->Attach(this);
 }
 
-void ECMouseDownObserver::Update()
+YObserver::YObserver(ECObserverSubject *view)
+{
+    this->view = view;
+    view->Attach(this);
+}
+
+MouseDownObserver::MouseDownObserver(ECObserverSubject *view)
+{
+    this->view = view;
+    view->Attach(this);
+}
+
+MouseUpObserver::MouseUpObserver(ECObserverSubject *view)
+{
+    this->view = view;
+    view->Attach(this);
+}
+
+MouseDragObserver::MouseDragObserver(ECObserverSubject *view)
+{
+    this->view = view;
+    view->Attach(this);
+}
+
+void ModeObserver::Update()
+{
+    ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
+    if (viewImp->GetCurrEvent() == ECGV_EV_KEY_DOWN_SPACE)
+    {
+        std::cout << "mode updated" << std::endl;
+    }
+}
+
+void DObserver::Update()
+{
+    ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
+    if (viewImp->GetCurrEvent() == ECGV_EV_KEY_DOWN_D)
+    {
+        std::cout << "d updated" << std::endl;
+    }
+}
+
+void ZObserver::Update()
+{
+    ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
+    if (viewImp->GetCurrEvent() == ECGV_EV_KEY_DOWN_Z)
+    {
+        std::cout << "z updated" << std::endl;
+    }
+}
+
+void YObserver::Update()
+{
+    ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
+    if (viewImp->GetCurrEvent() == ECGV_EV_KEY_DOWN_Y)
+    {
+        std::cout << "y updated" << std::endl;
+    }
+}
+
+void MouseDownObserver::Update()
 {
     ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
     if (viewImp->GetCurrEvent() == ECGV_EV_MOUSE_BUTTON_DOWN)
     {
-        int x1, y1;
-        viewImp->GetCursorPosition(x1, y1);
-        std::cout << "Mouse down at (" << x1 << ", " << y1 << ")" << std::endl;
+        std::cout << "mouse down updated" << std::endl;
     }
 }
-void ECMouseUpObserver::Update()
+
+void MouseUpObserver::Update()
 {
     ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
     if (viewImp->GetCurrEvent() == ECGV_EV_MOUSE_BUTTON_UP)
     {
-        int x2, y2;
-        viewImp->GetCursorPosition(x2, y2);
-        std::cout << "Mouse up at (" << x2 << "," << y2 << ")\n";
+        std::cout << "mouse up updated" << std::endl;
     }
 }
-void ECMouseMoveObserver::Update()
+
+void MouseDragObserver::Update()
 {
+    int x, y;
     ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
-    if (viewImp->GetCurrEvent() == ECGV_EV_MOUSE_MOVING)
-    {
-        int x2, y2;
-        viewImp->GetCursorPosition(x2, y2);
-        std::cout << "Mouse moving at (" << x2 << "," << y2 << ")\n";
+    if (viewImp->GetCurrEvent() == ECGV_EV_MOUSE_MOVING){
+        viewImp->GetCursorPosition(x, y);
+        //cout mouse moving at (x, y)
+        std::cout << "mouse moving at ( " << x << " : " << y << " )\n";
     }
 }
-void ECKeyDownObserver::Update()
-{
-}
-void ECKeyUpObserver::Update()
-{
-}
 
-ECGraphicControllerImp::ECGraphicControllerImp(ECGraphicModelImp &model): model(model){}
-ECGraphicModelImp::ECGraphicModelImp(): ctrl(*this){}
-
+// observer subject constructor
+ECObserverSubject::ECObserverSubject()
+{
+    // instantiate all observers
+    ECObserver *pModeObs = new ModeObserver(this);
+    ECObserver *pDObs = new DObserver(this);
+    ECObserver *pZObs = new ZObserver(this);
+    ECObserver *pYObs = new YObserver(this);
+    ECObserver *pMouseDownObs = new MouseDownObserver(this);
+    ECObserver *pMouseUpObs = new MouseUpObserver(this);
+    ECObserver *pMouseDragObs = new MouseDragObserver(this);
+}

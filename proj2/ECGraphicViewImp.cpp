@@ -67,8 +67,8 @@ void ECGraphicViewImp :: Show()
         RenderStart();
         
         // draw something
-        // DrawRectangle(100, 100, 400, 400);
-        // SetRedraw(true);
+        //DrawRectangle(100, 100, 400, 400);
+        //SetRedraw(true);
         
         // Notify clients
         Notify();
@@ -260,6 +260,15 @@ ECGVEventType ECGraphicViewImp :: WaitForEvent()
             
             case ALLEGRO_KEY_G:
                 return ECGV_EV_KEY_DOWN_G;
+                
+            case ALLEGRO_KEY_F:
+                return ECGV_EV_KEY_DOWN_F;
+                
+            case ALLEGRO_KEY_LCTRL:
+                return ECGV_EV_KEY_DOWN_CTRL;
+                
+            case ALLEGRO_KEY_RCTRL:
+                return ECGV_EV_KEY_DOWN_CTRL;
                     
         }
     }
@@ -295,6 +304,15 @@ ECGVEventType ECGraphicViewImp :: WaitForEvent()
             case ALLEGRO_KEY_G:
                 return ECGV_EV_KEY_UP_G;
                 
+            case ALLEGRO_KEY_F:
+                return ECGV_EV_KEY_UP_F;
+                
+            case ALLEGRO_KEY_LCTRL:
+                return ECGV_EV_KEY_UP_CTRL;
+                
+            case ALLEGRO_KEY_RCTRL:
+                return ECGV_EV_KEY_UP_CTRL;
+                
         }
     }
     else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
@@ -323,7 +341,7 @@ void ECGraphicViewImp :: GetCursorPosition(int &cx, int &cy) const
 }
 
 // Drawing functions
-void ECGraphicViewImp :: DrawLine(int x1, int y1, int x2, int y2, int thickness, ECGVColor color)
+void  ECGraphicViewImp :: DrawLine(int x1, int y1, int x2, int y2, int thickness, ECGVColor color)
 {
     // draw a line
     al_draw_line(x1,y1,x2,y2,arrayAllegroColors[color],thickness);

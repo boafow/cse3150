@@ -1,5 +1,3 @@
-# g++ ECGraphicViewImp.cpp test-gv.cpp -lallegro -lallegro_font -lallegro_primitives -lallegro_image -lallegro_main
-
 CC = g++
 CFLAGS = -Wall -g
 
@@ -18,3 +16,4 @@ test-gv.o: test-gv.cpp ECGraphicViewImp.h
 
 clean:
 	rm -f *.o $(TARGET)
+	

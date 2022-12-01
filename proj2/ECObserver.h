@@ -1,102 +1,21 @@
+//
+//  ECObserver.h
+//
+//
+//  Created by Yufeng Wu on 2/27/20.
+//
+//
+
 #ifndef ECOBERVER_H
 #define ECOBERVER_H
 
 #include <vector>
 #include <algorithm>
 #include <iostream>
-//********************************************
-// Command design pattern: command interface
-class ECGraphicModelImp;
-class ECCommand
-{
-public:
-    virtual void Execute() = 0;
-    virtual void Unexecute() = 0;
-};
-
-class MouseDownCommand : public ECCommand
-{
-public:
-    MouseDownCommand(ECGraphicModelImp &model);
-    virtual ~MouseDownCommand(){};
-    void Execute();
-    void Unexecute();
-
-private:
-    ECGraphicModelImp &model;
-    int x1, y1;
-};
-
-class MouseUpCommand : public ECCommand
-{
-public:
-    MouseUpCommand(ECGraphicModelImp &model);
-    virtual ~MouseUpCommand(){};
-    void Execute();
-    void Unexecute();
-
-private:
-    ECGraphicModelImp &model;
-};
-
-class MouseMoveCommand : public ECCommand
-{
-public:
-    MouseMoveCommand(ECGraphicModelImp &model);
-    virtual ~MouseMoveCommand(){};
-    void Execute();
-    void Unexecute();
-
-private:
-    ECGraphicModelImp &model;
-};
-
-class KeyDownCommand : public ECCommand
-{
-public:
-    KeyDownCommand(ECGraphicModelImp &model);
-    virtual ~KeyDownCommand(){};
-    void Execute();
-    void Unexecute();
-
-private:
-    ECGraphicModelImp &model;
-};
-
-class KeyUpCommand : public ECCommand
-{
-public:
-    KeyUpCommand(ECGraphicModelImp &model);
-    virtual ~KeyUpCommand(){};
-    void Execute();
-    void Unexecute();
-
-private:
-    ECGraphicModelImp &model;
-};
-
-// Command design pattern: command history
-class ECCommandHistory
-{
-public:
-    ECCommandHistory() : currCmdIndex(-1) {}
-    ~ECCommandHistory();
-    void AddCommand(ECCommand *cmd);
-    bool Undo();
-    bool Redo();
-    void ExecuteCmd(ECCommand *cmd);
-
-private:
-    std::vector<ECCommand *> cmdHistory;
-    int currCmdIndex;
-};
 
 //********************************************
 // Observer design pattern: observer interface
-
 class ECObserverSubject;
-// class ECGraphicViewImp;
-
 class ECObserver
 {
 public:
@@ -104,89 +23,67 @@ public:
     virtual void Update() = 0;
 };
 
-class ECMouseDownObserver : public ECObserver
-{
-    ECObserverSubject *view;
-    // ECGraphicViewImp *viewImp;
-
-public:
-    ECMouseDownObserver(ECObserverSubject *view);
-    virtual ~ECMouseDownObserver() {}
-    virtual void Update();
-};
-
-class ECMouseUpObserver : public ECObserver
+class ModeObserver : public ECObserver
 {
     ECObserverSubject *view;
 
 public:
-    ECMouseUpObserver(ECObserverSubject *view);
-    virtual ~ECMouseUpObserver() {}
+    ModeObserver(ECObserverSubject *view);
     virtual void Update();
 };
 
-class ECMouseMoveObserver : public ECObserver
+class DObserver : public ECObserver
 {
     ECObserverSubject *view;
 
 public:
-    ECMouseMoveObserver(ECObserverSubject *view);
-    virtual ~ECMouseMoveObserver() {}
+    DObserver(ECObserverSubject *view);
     virtual void Update();
 };
 
-class ECKeyDownObserver : public ECObserver
+class ZObserver : public ECObserver
 {
     ECObserverSubject *view;
 
 public:
-    ECKeyDownObserver(ECObserverSubject *view);
-    virtual ~ECKeyDownObserver() {}
+    ZObserver(ECObserverSubject *view);
     virtual void Update();
 };
 
-class ECKeyUpObserver : public ECObserver
+class YObserver : public ECObserver
 {
     ECObserverSubject *view;
 
 public:
-    ECKeyUpObserver(ECObserverSubject *view);
-    virtual ~ECKeyUpObserver() {}
+    YObserver(ECObserverSubject *view);
     virtual void Update();
 };
 
-//********************************************
-// MVC Design Pattern: Controller
-class ECGraphicControllerImp
+class MouseDownObserver : public ECObserver
 {
-public:
-    ECGraphicControllerImp(ECGraphicModelImp &model);
-    virtual ~ECGraphicControllerImp(){};
+    ECObserverSubject *view;
 
-private:
-    ECGraphicModelImp &model;
-    ECCommandHistory cmdHistory;
+public:
+    MouseDownObserver(ECObserverSubject *view);
+    virtual void Update();
 };
 
-//********************************************
-// MVC design pattern: Model
-class ECGraphicModelImp
+class MouseUpObserver : public ECObserver
 {
+    ECObserverSubject *view;
+
 public:
-    ECGraphicModelImp();
-    virtual ~ECGraphicModelImp() {}
-    ECGraphicControllerImp &GetController() { return ctrl; }
-    void SetX1(int x1) { this->x1 = x1; }
-    void SetY1(int y1) { this->y1 = y1; }
-    void SetX2(int x2) { this->x2 = x2; }
-    void SetY2(int y2) { this->y2 = y2; }
-    int GetX1() const { return x1; }
-    int GetY1() const { return y1; }
-    int GetX2() const { return x2; }
-    int GetY2() const { return y2; }
-private:
-    int x1, y1, x2, y2;
-    ECGraphicControllerImp ctrl;
+    MouseUpObserver(ECObserverSubject *view);
+    virtual void Update();
+};
+
+class MouseDragObserver : public ECObserver
+{
+    ECObserverSubject *view;
+
+public:
+    MouseDragObserver(ECObserverSubject *view);
+    virtual void Update();
 };
 
 //********************************************
