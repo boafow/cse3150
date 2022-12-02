@@ -5,10 +5,12 @@ TARGET = test-gv
 
 all: $(TARGET)
 
-$(TARGET): ECGraphicViewImp.o ECObserver.o test-gv.o 
-	$(CC) $(CFLAGS) -o $(TARGET) ECGraphicViewImp.o ECObserver.o test-gv.o -lallegro -lallegro_font -lallegro_primitives -lallegro_image -lallegro_main
+$(TARGET): ECGraphicViewImp.o ECGraphicController.o ECObserver.o test-gv.o 
+	$(CC) $(CFLAGS) -o $(TARGET) ECGraphicViewImp.o ECGraphicController.o ECObserver.o test-gv.o -lallegro -lallegro_font -lallegro_primitives -lallegro_image -lallegro_main
 
 ECGraphicViewImp.o: ECGraphicViewImp.cpp ECGraphicViewImp.h
+
+ECGraphicController.o: ECGraphicController.cpp ECGraphicController.h
 
 ECObserver.o: ECObserver.cpp ECObserver.h
 

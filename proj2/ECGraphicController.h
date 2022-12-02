@@ -7,6 +7,7 @@
 #include "ECGraphicViewImp.h"
 #include "ECShape.h"
 
+class ECGraphicDocument;
 //********************************************
 // Command
 class ECCommand
@@ -19,30 +20,27 @@ public:
 
 class ECCreateRectangleCommand : public ECCommand
 {
-    ECRectangle *rect;
-    ECGraphicViewImp *view;
+    ECGraphicDocument &doc;
 public:
-    ECCreateRectangleCommand(ECGraphicViewImp *view, int x1, int y1, int x2, int y2);
+    ECCreateRectangleCommand(ECGraphicViewImp &docIn, int x1, int y1, int x2, int y2);
     virtual void Execute();
     virtual void UnExecute();
 };
 
 class ECCreateCircleCommand : public ECCommand
 {
-    ECCircle *circle;
-    ECGraphicViewImp *view;
+    ECGraphicDocument &doc;
 public:
-    ECCreateCircleCommand(ECGraphicViewImp *view, int xcenter, int ycenter, double radius);
+    ECCreateCircleCommand(ECGraphicViewImp &docIn, int xcenter, int ycenter, double radius);
     virtual void Execute();
     virtual void UnExecute();
 };
 
 class ECCreateEllipseCommand : public ECCommand
 {
-    ECEllipse *ellipse;
-    ECGraphicViewImp *view;
+    ECGraphicDocument &doc;
 public:
-    ECCreateEllipseCommand(ECGraphicViewImp *view, int xcenter, int ycenter, double radiusx, double radiusy);
+    ECCreateEllipseCommand(ECGraphicViewImp &docIn, int xcenter, int ycenter, double radiusx, double radiusy);
     virtual void Execute();
     virtual void UnExecute();
 };
@@ -53,28 +51,27 @@ class ECCommandHistory
 {
     std::vector<ECCommand *> commandHistory;
     int currentCommandIndex;
-    int maxCommandIndex;
-
 public:
-    ECCommandHistory() : currentCommandIndex(-1), maxCommandIndex(-1) {}
-    void AddCommand(ECCommand *pCmd);
-    void Execute();
-    void Unexecute();
+    ECCommandHistory();
+    ~ECCommandHistory();
+    void ExecuteCmd(ECCommand *pCmd);
+    bool Undo();
+    bool Redo();
 };
 
 //********************************************
 // Controller
 class ECGraphicController
 {
-    ECGraphicViewImp &view;
+    ECGraphicDocument &doc;
     ECCommandHistory commandHistory;
 
 public:
-    ECGraphicController(ECGraphicViewImp &view) : view(view) {}
-    virtual ~ECGraphicController(){};
+    ECGraphicController(ECGraphicDocument &docIn);
+    virtual ~ECGraphicController();
     void CreateShape(ECShape *shape);
-    void Undo();
-    void Redo();
+    bool Undo();
+    bool Redo();
 };
 
 //********************************************
@@ -83,15 +80,12 @@ class ECGraphicDocument
 {
     std::vector<ECShape *> shapes;
     ECGraphicController controller;
-
 public:
     ECGraphicDocument();
     virtual ~ECGraphicDocument();
     ECGraphicController &GetController();
-    int GetNumShapes() const;
-    ECShape *GetShape(int index) const;
     void CreateShape(ECShape *shape);
-    virtual void DeleteShape(ECShape *shape);
+    void DeleteShape(ECShape *shape);
 };
 
 #endif /* ECGRAHPICCONTROLLER_H */
