@@ -57,7 +57,7 @@ void DObserver::Update()
     ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
     if (viewImp->GetCurrEvent() == ECGV_EV_KEY_DOWN_D)
     {
-        std::cout << "d updated" << std::endl;
+        
     }
 }
 
@@ -84,7 +84,7 @@ void MouseDownObserver::Update()
     ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
     if (viewImp->GetCurrEvent() == ECGV_EV_MOUSE_BUTTON_DOWN)
     {
-        std::cout << "mouse down updated" << std::endl;
+        
     }
 }
 
@@ -99,12 +99,16 @@ void MouseUpObserver::Update()
 
 void MouseDragObserver::Update()
 {
-    int x, y;
+    int x1, y1;
     ECGraphicViewImp *viewImp = dynamic_cast<ECGraphicViewImp *>(view);
-    if (viewImp->GetCurrEvent() == ECGV_EV_MOUSE_MOVING){
-        viewImp->GetCursorPosition(x, y);
-        //cout mouse moving at (x, y)
-        std::cout << "mouse moving at ( " << x << " : " << y << " )\n";
+    viewImp->GetCursorPosition(x1, y1);
+    if (viewImp->GetCurrEvent() == ECGV_EV_MOUSE_MOVING)
+    {
+        int x2, y2;
+        //draw a rectangle with x11 = x2 and y1 = y2
+        viewImp->GetCursorPosition(x2, y2);
+        viewImp->DrawRectangle(0, 0, x2, y2);
+        viewImp->SetRedraw(true);
     }
 }
 
