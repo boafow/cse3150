@@ -2,8 +2,9 @@
 using namespace std;
 
 // test if vec[pos] == 0
-bool ECVecTestZero( ......  )
+bool ECVecTestZero(vector<int>& vec, int pos)
 {
-  // your code
+	if(vec[pos] == 0) return true;
+	if(pos > vec.size()) return false;
 }
 

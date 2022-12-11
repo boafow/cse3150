@@ -1,11 +1,17 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 using namespace std;
 
-bool ECConsecutiveVec(.... )
+bool ECConsecutiveVec(vector<int>& vec)
 {
-  // your code ehre
+	if(vec.size() < 2) return false;
+	sort(vec.begin(), vec.end());
+	for(int i = 0; i < vec.size()-1; ++i){
+		if(pow(vec[i]-vec[i+1], 2) != 1) return false;
+	}
+	return true;
 }
 
 // test

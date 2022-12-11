@@ -7,6 +7,7 @@
 
 #include "ECGraphicViewImp.h"
 #include "allegro5/allegro_primitives.h"
+#include "ECCommand.h"
 #include <allegro5/allegro_image.h>
 #include <iostream>
 
@@ -260,15 +261,6 @@ ECGVEventType ECGraphicViewImp :: WaitForEvent()
             
             case ALLEGRO_KEY_G:
                 return ECGV_EV_KEY_DOWN_G;
-                
-            case ALLEGRO_KEY_F:
-                return ECGV_EV_KEY_DOWN_F;
-                
-            case ALLEGRO_KEY_LCTRL:
-                return ECGV_EV_KEY_DOWN_CTRL;
-                
-            case ALLEGRO_KEY_RCTRL:
-                return ECGV_EV_KEY_DOWN_CTRL;
                     
         }
     }
@@ -303,15 +295,6 @@ ECGVEventType ECGraphicViewImp :: WaitForEvent()
                 
             case ALLEGRO_KEY_G:
                 return ECGV_EV_KEY_UP_G;
-                
-            case ALLEGRO_KEY_F:
-                return ECGV_EV_KEY_UP_F;
-                
-            case ALLEGRO_KEY_LCTRL:
-                return ECGV_EV_KEY_UP_CTRL;
-                
-            case ALLEGRO_KEY_RCTRL:
-                return ECGV_EV_KEY_UP_CTRL;
                 
         }
     }

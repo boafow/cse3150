@@ -22,14 +22,10 @@ private:
 class ECSportsPlayer {
 public:
   virtual bool CanPlay(ECTournament &tr) const {
-    if (IsDisqualified(tr)) {
-      return false;
+    if(IsDisqualified(tr) == true){
+	    return false;
     }
-    // before adding IsQualified in RankedPlayer, this was defaulting to false
-    if (IsQualified(tr)) {
-      return true;
-    }
-    return false;
+    return IsQualified(tr);
   }
 
   // return true if exists a POSITIVE rule saying that can play
@@ -48,18 +44,9 @@ public:
 class ECSportsPlayerRanked : public ECSportsPlayer {
 public:
   ECSportsPlayerRanked(int r): rank(r) {}
-  virtual bool CanPlay(ECTournament &tr) const {
-    return rank <= tr.GetMinRank();
-  }
-  
-  // added below
   virtual bool IsQualified(ECTournament &tr) const {
     return rank <= tr.GetMinRank();
   }
-  virtual bool IsDisqualified(ECTournament &tr) const {
-    return rank > tr.GetMinRank();
-  }
-
 private:
   int rank;
 };
@@ -94,13 +81,15 @@ public:
 // YW: THIS IS THE NEW CLASS TO IMPLEMENT
 
 // ********************************************
-// player for qualifying rounds: qualify for any tournament if the winner of qualifying 
-class ECSportsPlayerQualMatch  {
+class ECSportsPlayerQualMatch : public ECSportsPlayerDec  {
 public:
-  // playerOrig: original player, fWinnerQual: is this player the winner of the qualifying rounds
-  ECSportsPlayerWildcard(ECSportsPlayer &playerOrig, bool fWinnerQual) ...
-
+  ECSportsPlayerQualMatch(ECSportsPlayer &playerOrig, bool fWinnerQual) : ECSportsPlayerDec(playerOrig), fWinnerQual(fWinnerQual) {}
   // your code
+  virtual bool IsQualified(ECTournament &tr) const {
+	  return true && fWinnerQual;
+  }
+private:
+	  bool fWinnerQual;
 };
 
 // ********************************************
@@ -109,6 +98,9 @@ class ECSportsPlayerDisciplined : public ECSportsPlayerDec {
 public:
   ECSportsPlayerDisciplined(ECSportsPlayer &playerOrig, int mS, int mE): ECSportsPlayerDec(playerOrig), mStart(mS), mEnd(mE) {}
   virtual bool IsDisqualified(ECTournament &tr) const override {
+    if(ECSportsPlayerDec::IsDisqualified(tr) == true){
+	    return true;
+    }
     return tr.GetMonth() >= mStart && tr.GetMonth() <= mEnd;
   }
 private:
@@ -122,11 +114,13 @@ class ECSportsPlayerInjured : public ECSportsPlayerDec {
 public:
   ECSportsPlayerInjured(ECSportsPlayer &playerOrig, int m): ECSportsPlayerDec(playerOrig), month(m) {}
   virtual bool IsDisqualified(ECTournament &tr) const override {
-    return tr.GetMonth() == month;
+    	if(ECSportsPlayerDec::IsDisqualified(tr) == true){
+		return true;
+	}
+	return tr.GetMonth() == month;
   }
 private:
   int month;
 };
-
 #endif
 
