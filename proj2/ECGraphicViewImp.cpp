@@ -261,6 +261,9 @@ ECGVEventType ECGraphicViewImp :: WaitForEvent()
             
             case ALLEGRO_KEY_G:
                 return ECGV_EV_KEY_DOWN_G;
+
+            case ALLEGRO_KEY_F:
+                return ECGV_EV_KEY_DOWN_F;
                     
         }
     }
@@ -295,6 +298,9 @@ ECGVEventType ECGraphicViewImp :: WaitForEvent()
                 
             case ALLEGRO_KEY_G:
                 return ECGV_EV_KEY_UP_G;
+
+            case ALLEGRO_KEY_F:
+                return ECGV_EV_KEY_UP_F;
                 
         }
     }

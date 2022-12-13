@@ -58,7 +58,9 @@ enum ECGVEventType
     ECGV_EV_KEY_UP_SPACE = 21,
     ECGV_EV_KEY_DOWN_SPACE = 22,
     ECGV_EV_KEY_DOWN_G = 23,
-    ECGV_EV_KEY_UP_G = 24
+    ECGV_EV_KEY_UP_G = 24,
+    ECGV_EV_KEY_UP_F = 25,
+    ECGV_EV_KEY_DOWN_F = 26
 };
 
 //***********************************************************

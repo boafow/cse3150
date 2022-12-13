@@ -51,19 +51,20 @@ private:
 class ECShape
 {
 public:
-    ECShape(int x1, int y1, int x2, int y2, int shapeType) : x1(x1), y1(y1), x2(x2), y2(y2), shapeType(shapeType){};
+    ECShape(int x1, int y1, int x2, int y2, int shapeType, int fill) : x1(x1), y1(y1), x2(x2), y2(y2), shapeType(shapeType), fill(fill) {};
     int Getx1() { return x1; }
     int Gety1() { return y1; }
     int Getx2() { return x2; }
     int Gety2() { return y2; }
     int GetShapeType() { return shapeType; }
-
+    int GetFill() { return fill; }
 private:
     int x1 = 0;
     int y1 = 0;
     int x2 = 0;
     int y2 = 0;
     int shapeType;
+    int fill;
 };
 
 class ECCreateShapeCmd : public ECCommand
@@ -114,8 +115,8 @@ class ECGraphicDocCtrl
 public:
     ECGraphicDocCtrl(ECGraphicDoc &docIn) : doc(docIn){};
     virtual ~ECGraphicDocCtrl(){};
-    void AddShape(int x1, int y1, int x2, int y2, int shapeType);
-    void RemoveShape(int x1, int y1, int x2, int y2, int shapeType);
+    void AddShape(int x1, int y1, int x2, int y2, int shapeType, int fill);
+    void RemoveShape(int x1, int y1, int x2, int y2, int shapeType, int fill);
     void MoveShape(ECShape s, int xfactor, int yfactor);
     bool Undo();
     bool Redo();
