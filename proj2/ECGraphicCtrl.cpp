@@ -1,6 +1,7 @@
 #include "ECGraphicCtrl.h"
 #include "ECGraphicViewImp.h"
 #include "ECCommand.h"
+#include <cmath>
 //*************************************************************************************************
 // Keystroke observer
 KeystrokeObserver ::KeystrokeObserver(ECGraphicViewImp *view, ECGraphicDocCtrl &ctrl) : ctrl(&ctrl)
@@ -37,7 +38,8 @@ void KeystrokeObserver ::Update()
 MouseEvObserver ::MouseEvObserver(ECGraphicViewImp *view, ECGraphicDocCtrl &ctrl, ECGraphicDoc &docIn) : ctrl(&ctrl), doc(&docIn)
 {
     _subject = view;
-    mode = 0;
+    mode;
+    ;
     _subject->Attach(this);
 }
 
@@ -49,11 +51,23 @@ MouseEvObserver ::~MouseEvObserver()
 void MouseEvObserver ::Update()
 {
     ECGVEventType event = _subject->GetCurrEvent();
-
+    // Change mode
     if (event == ECGV_EV_KEY_DOWN_SPACE)
     {
         mode++;
     }
+    // Change shape
+    if (event == ECGV_EV_KEY_DOWN_G)
+    {
+        shapeType++;
+    }
+
+    // Change fill
+    if (event == ECGV_EV_KEY_DOWN_UP)
+    {
+        fill++;
+    }
+
     // EDITING MODE
     if (mode % 2 == 1)
     {
@@ -64,15 +78,26 @@ void MouseEvObserver ::Update()
             clicked = true;
             for (int i = 0; i < shapes.size(); i++)
             {
-                if ((x1 <= shapes[i].Getx1() && y1 <= shapes[i].Gety1() && x1 >= shapes[i].Getx2() && y1 >= shapes[i].Gety2()) ||
-                    (x1 >= shapes[i].Getx1() && y1 >= shapes[i].Gety1() && x1 <= shapes[i].Getx2() && y1 <= shapes[i].Gety2()) ||
-                    (x1 >= shapes[i].Getx1() && y1 <= shapes[i].Gety1() && x1 <= shapes[i].Getx2() && y1 >= shapes[i].Gety2()) ||
-                    (x1 <= shapes[i].Getx1() && y1 >= shapes[i].Gety1() && x1 >= shapes[i].Getx2() && y1 <= shapes[i].Gety2()))
+                if (shapes[i].GetShapeType() % 2 == 0 && ((x1 <= shapes[i].Getx1() && y1 <= shapes[i].Gety1() && x1 >= shapes[i].Getx2() && y1 >= shapes[i].Gety2()) ||
+                                                          (x1 >= shapes[i].Getx1() && y1 >= shapes[i].Gety1() && x1 <= shapes[i].Getx2() && y1 <= shapes[i].Gety2()) ||
+                                                          (x1 >= shapes[i].Getx1() && y1 <= shapes[i].Gety1() && x1 <= shapes[i].Getx2() && y1 >= shapes[i].Gety2()) ||
+                                                          (x1 <= shapes[i].Getx1() && y1 >= shapes[i].Gety1() && x1 >= shapes[i].Getx2() && y1 <= shapes[i].Gety2())))
                 {
                     pos = i;
                     selected = true;
                     break;
                 }
+                else if (shapes[i].GetShapeType() % 2 == 1 &&
+                         (pow((x1 - shapes[i].Getx1()), 2) + pow((y1 - shapes[i].Gety1()), 2) <= pow((shapes[i].Getx2() - shapes[i].Getx1()), 2) ||
+                          pow((x1 - shapes[i].Getx2()), 2) + pow((y1 - shapes[i].Gety2()), 2) <= pow((shapes[i].Getx2() - shapes[i].Getx1()), 2) ||
+                          pow((x1 - shapes[i].Getx1()), 2) + pow((y1 - shapes[i].Gety2()), 2) <= pow((shapes[i].Getx2() - shapes[i].Getx1()), 2) ||
+                          pow((x1 - shapes[i].Getx2()), 2) + pow((y1 - shapes[i].Gety1()), 2) <= pow((shapes[i].Getx2() - shapes[i].Getx1()), 2)))
+                {
+                    pos = i;
+                    selected = true;
+                    break;
+                }
+
                 else
                 {
                     pos = -1;
@@ -95,10 +120,20 @@ void MouseEvObserver ::Update()
         {
             if (clicked && selected)
             {
-                moving = true;
-                _subject->GetCursorPosition(x2, y2);
-                ECShape shape = shapes[pos];
-                _subject->DrawRectangle(shape.Getx1() + (x2 - x1), shape.Gety1() + (y2 - y1), shape.Getx2() + (x2 - x1), shape.Gety2() + (y2 - y1));
+                if (shapeType % 2 == 0)
+                {
+                    moving = true;
+                    _subject->GetCursorPosition(x2, y2);
+                    ECShape shape = shapes[pos];
+                    _subject->DrawRectangle(shape.Getx1() + (x2 - x1), shape.Gety1() + (y2 - y1), shape.Getx2() + (x2 - x1), shape.Gety2() + (y2 - y1));
+                }
+                else
+                {
+                    moving = true;
+                    _subject->GetCursorPosition(x2, y2);
+                    ECShape shape = shapes[pos];
+                    _subject->DrawEllipse(shape.Getx1() + (x2 - x1), shape.Gety1() + (y2 - y1), shape.Getx2() + (x2 - x1), shape.Gety2() + (y2 - y1));
+                }
             }
         }
 
@@ -106,7 +141,7 @@ void MouseEvObserver ::Update()
         {
             if (selected)
             {
-                ctrl->RemoveShape(shapes[pos].Getx1(), shapes[pos].Gety1(), shapes[pos].Getx2(), shapes[pos].Gety2());
+                ctrl->RemoveShape(shapes[pos].Getx1(), shapes[pos].Gety1(), shapes[pos].Getx2(), shapes[pos].Gety2(), shapes[pos].GetShapeType());
             }
             selected = false;
             pos = -1;
@@ -129,17 +164,34 @@ void MouseEvObserver ::Update()
 
         if (event == ECGV_EV_MOUSE_BUTTON_UP)
         {
-            clicked = false;
-            _subject->GetCursorPosition(x2, y2);
-            ctrl->AddShape(x1, y1, x2, y2);
+            if (shapeType % 2 == 0)
+            {
+                clicked = false;
+                _subject->GetCursorPosition(x2, y2);
+                ctrl->AddShape(x1, y1, x2, y2, 0);
+            }
+            else
+            {
+                clicked = false;
+                _subject->GetCursorPosition(x2, y2);
+                ctrl->AddShape(x1, y1, abs(x2 - x1) / 2, abs(y2 - y1) / 2, 1);
+            }
         }
 
         if (event == ECGV_EV_TIMER)
         {
             if (clicked)
             {
-                _subject->GetCursorPosition(x2, y2);
-                _subject->DrawRectangle(x1, y1, x2, y2);
+                if (shapeType % 2 == 0)
+                {
+                    _subject->GetCursorPosition(x2, y2);
+                    _subject->DrawRectangle(x1, y1, x2, y2);
+                }
+                else
+                {
+                    _subject->GetCursorPosition(x2, y2);
+                    _subject->DrawEllipse(x1, y1, abs(x2 - x1) / 2, abs(y2 - y1) / 2);
+                }
             }
         }
     }
@@ -149,12 +201,24 @@ void MouseEvObserver ::Update()
         vector<ECShape> shapes = doc->GetListShapes();
         for (int i = 0; i < shapes.size(); i++)
         {
-            if (moving && i == pos)
-                _subject->DrawRectangle(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2(), 3, ECGV_NONE);
-            else if (i == pos)
-                _subject->DrawRectangle(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2(), 3, ECGV_BLUE);
+            if (shapes[i].GetShapeType() == 0)
+            {
+                if (moving && i == pos)
+                    _subject->DrawRectangle(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2(), 3, ECGV_NONE);
+                else if (i == pos)
+                    _subject->DrawRectangle(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2(), 3, ECGV_BLUE);
+                else
+                    _subject->DrawRectangle(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2());
+            }
             else
-                _subject->DrawRectangle(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2());
+            {
+                if (moving && i == pos)
+                    _subject->DrawEllipse(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2(), 3, ECGV_NONE);
+                else if (i == pos)
+                    _subject->DrawEllipse(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2(), 3, ECGV_BLUE);
+                else
+                    _subject->DrawEllipse(shapes[i].Getx1(), shapes[i].Gety1(), shapes[i].Getx2(), shapes[i].Gety2());
+            }
         }
         _subject->SetRedraw(true);
     }
@@ -202,7 +266,7 @@ void ECMoveShapeCmd ::UnExecute()
     y1 = r.Gety1() + yfactor;
     x2 = r.Getx2() + xfactor;
     y2 = r.Gety2() + yfactor;
-    ECShape newShape(x1, y1, x2, y2);
+    ECShape newShape(x1, y1, x2, y2, r.GetShapeType());
     doc.RemoveShape(newShape);
     doc.AddShape(r);
 }
@@ -210,17 +274,17 @@ void ECMoveShapeCmd ::UnExecute()
 //***********************************************************************
 // Graphic Document Controller
 
-void ECGraphicDocCtrl ::AddShape(int x1, int y1, int x2, int y2)
+void ECGraphicDocCtrl ::AddShape(int x1, int y1, int x2, int y2, int shapeType)
 {
-    ECShape rectangle(x1, y1, x2, y2);
-    ECCreateShapeCmd *pCmdShape = new ECCreateShapeCmd(doc, rectangle);
+    ECShape shape(x1, y1, x2, y2, shapeType);
+    ECCreateShapeCmd *pCmdShape = new ECCreateShapeCmd(doc, shape);
     histCmds.ExecuteCmd(pCmdShape);
 }
 
-void ECGraphicDocCtrl ::RemoveShape(int x1, int y1, int x2, int y2)
+void ECGraphicDocCtrl ::RemoveShape(int x1, int y1, int x2, int y2, int shapeType)
 {
-    ECShape rectangle(x1, y1, x2, y2);
-    ECRemoveShapeCmd *pCmdRemove = new ECRemoveShapeCmd(doc, rectangle);
+    ECShape shape(x1, y1, x2, y2, shapeType);
+    ECRemoveShapeCmd *pCmdRemove = new ECRemoveShapeCmd(doc, shape);
     histCmds.ExecuteCmd(pCmdRemove);
 }
 
@@ -293,6 +357,6 @@ void ECGraphicDoc ::MoveShape(ECShape r, int xfactor, int yfactor)
     y1 = r.Gety1() + yfactor;
     x2 = r.Getx2() + xfactor;
     y2 = r.Gety2() + yfactor;
-    ECShape newShape(x1, y1, x2, y2);
+    ECShape newShape(x1, y1, x2, y2, r.GetShapeType());
     listShapes[pos] = newShape;
 }

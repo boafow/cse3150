@@ -31,30 +31,19 @@ class ECObserverSubject
 public:
     ECObserverSubject() {}
     virtual ~ECObserverSubject() {}
-    void Attach( ECObserver *pObs )
-    {
-//std::cout << "Adding an observer.\n";
-        listObservers.push_back(pObs);
-    }
-    void Detach( ECObserver *pObs )
-    {
+    void Attach(ECObserver *pObs) { listObservers.push_back(pObs); }
+    void Detach(ECObserver *pObs) {
         listObservers.erase(std::remove(listObservers.begin(), listObservers.end(), pObs), listObservers.end());
     }
-    void Notify()
-    {
-//std::cout << "Notify: number of observer: " << listObservers.size() << std::endl;
-        for(unsigned int i=0; i<listObservers.size(); ++i)
-        {
+    
+    void Notify() {
+        for (unsigned int i = 0; i < listObservers.size(); ++i) {
             listObservers[i]->Update();
         }
     }
-    
+
 private:
     std::vector<ECObserver *> listObservers;
 };
-
-
-
-
 
 #endif
