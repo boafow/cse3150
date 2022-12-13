@@ -120,7 +120,7 @@ void MouseEvObserver ::Update()
         {
             if (clicked && selected)
             {
-                if (shapeType % 2 == 0)
+                if (shapes[pos].GetShapeType() % 2 == 0)
                 {
                     moving = true;
                     _subject->GetCursorPosition(x2, y2);
@@ -132,7 +132,7 @@ void MouseEvObserver ::Update()
                     moving = true;
                     _subject->GetCursorPosition(x2, y2);
                     ECShape shape = shapes[pos];
-                    _subject->DrawEllipse(shape.Getx1() + (x2 - x1), shape.Gety1() + (y2 - y1), shape.Getx2() + (x2 - x1), shape.Gety2() + (y2 - y1));
+                    _subject->DrawEllipse(shape.Getx1() + (x2 - x1), shape.Gety1() + (y2 - y1), shape.Getx2(), shape.Gety2());
                 }
             }
         }
@@ -353,10 +353,18 @@ void ECGraphicDoc ::MoveShape(ECShape r, int xfactor, int yfactor)
     }
 
     int x1, x2, y1, y2;
-    x1 = r.Getx1() + xfactor;
-    y1 = r.Gety1() + yfactor;
-    x2 = r.Getx2() + xfactor;
-    y2 = r.Gety2() + yfactor;
+    if (r.GetShapeType() % 2 == 0)
+    {
+        x1 = r.Getx1() + xfactor;
+        y1 = r.Gety1() + yfactor;
+        x2 = r.Getx2() + xfactor;
+        y2 = r.Gety2() + yfactor;
+    } else {
+        x1 = r.Getx1() + xfactor;
+        y1 = r.Gety1() + yfactor;
+        x2 = r.Getx2();
+        y2 = r.Gety2();
+    }
     ECShape newShape(x1, y1, x2, y2, r.GetShapeType());
     listShapes[pos] = newShape;
 }
