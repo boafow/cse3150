@@ -264,6 +264,9 @@ ECGVEventType ECGraphicViewImp :: WaitForEvent()
 
             case ALLEGRO_KEY_F:
                 return ECGV_EV_KEY_DOWN_F;
+
+            case ALLEGRO_KEY_LCTRL:
+                return ECGV_EV_KEY_DOWN_LCTRL;
                     
         }
     }
@@ -301,7 +304,10 @@ ECGVEventType ECGraphicViewImp :: WaitForEvent()
 
             case ALLEGRO_KEY_F:
                 return ECGV_EV_KEY_UP_F;
-                
+
+            case ALLEGRO_KEY_LCTRL:
+                return ECGV_EV_KEY_UP_LCTRL;
+
         }
     }
     else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)

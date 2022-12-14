@@ -51,6 +51,7 @@ MouseEvObserver ::~MouseEvObserver()
 void MouseEvObserver ::Update()
 {
     ECGVEventType event = _subject->GetCurrEvent();
+
     // Change mode
     if (event == ECGV_EV_KEY_DOWN_SPACE)
     {
@@ -104,7 +105,41 @@ void MouseEvObserver ::Update()
                     selected = false;
                 }
             }
+
         }
+
+        if (event == ECGV_EV_KEY_DOWN_LCTRL)
+        {
+            // if mouse down get the position
+            // vector for shapes add to
+            vector<ECShape> shapes = doc->GetListShapes();
+            vector<ECShape> groupShapes;
+            if (event == ECGV_EV_MOUSE_BUTTON_DOWN)
+            {
+                _subject->GetCursorPosition(x1, y1);
+
+                for (int i = 0; i < shapes.size(); i++)
+                {
+                    if (shapes[i].GetShapeType() % 2 == 0 && ((x1 <= shapes[i].Getx1() && y1 <= shapes[i].Gety1() && x1 >= shapes[i].Getx2() && y1 >= shapes[i].Gety2()) ||
+                                                              (x1 >= shapes[i].Getx1() && y1 >= shapes[i].Gety1() && x1 <= shapes[i].Getx2() && y1 <= shapes[i].Gety2()) ||
+                                                              (x1 >= shapes[i].Getx1() && y1 <= shapes[i].Gety1() && x1 <= shapes[i].Getx2() && y1 >= shapes[i].Gety2()) ||
+                                                              (x1 <= shapes[i].Getx1() && y1 >= shapes[i].Gety1() && x1 >= shapes[i].Getx2() && y1 <= shapes[i].Gety2())))
+                    {
+                        groupShapes.push_back(shapes[i]);
+                    }
+                    else if (shapes[i].GetShapeType() % 2 == 1 &&
+                             (pow((x1 - shapes[i].Getx1()), 2) + pow((y1 - shapes[i].Gety1()), 2) <= pow((shapes[i].Getx2() - shapes[i].Getx1()), 2) ||
+                              pow((x1 - shapes[i].Getx2()), 2) + pow((y1 - shapes[i].Gety2()), 2) <= pow((shapes[i].Getx2() - shapes[i].Getx1()), 2) ||
+                              pow((x1 - shapes[i].Getx1()), 2) + pow((y1 - shapes[i].Gety2()), 2) <= pow((shapes[i].Getx2() - shapes[i].Getx1()), 2) ||
+                              pow((x1 - shapes[i].Getx2()), 2) + pow((y1 - shapes[i].Gety1()), 2) <= pow((shapes[i].Getx2() - shapes[i].Getx1()), 2)))
+                    {
+                        groupShapes.push_back(shapes[i]);
+                    }
+                }
+            }
+            ctrl->CreateGroup(new ECCompShape(groupShapes));
+        }
+
         if (event == ECGV_EV_MOUSE_BUTTON_UP)
         {
             clicked = false;
@@ -190,6 +225,31 @@ void MouseEvObserver ::Update()
                 _subject->GetCursorPosition(x2, y2);
                 ctrl->AddShape(x1, y1, abs(x2 - x1) / 2, abs(y2 - y1) / 2, 1, fill % 2);
             }
+        }
+
+        if (event == ECGV_EV_KEY_DOWN_LCTRL)
+        {
+            // while control is being held down, if the mouse is clicked, select the shape and add it to the list of selected shapes
+            // return the shape that is selected
+        }
+        if (event == ECGV_EV_KEY_DOWN_UP)
+        {
+            // move selected composite shape up by 10 pixels each time the up arrow is pressed
+        }
+
+        if (event == ECGV_EV_KEY_DOWN_DOWN)
+        {
+            // move selected composite shape down by 10 pixels each time the down arrow is pressed
+        }
+
+        if (event == ECGV_EV_KEY_DOWN_LEFT)
+        {
+            // move selected composite shape left by 10 pixels each time the left arrow is pressed
+        }
+
+        if (event == ECGV_EV_KEY_DOWN_RIGHT)
+        {
+            // move selected composite shape right by 10 pixels each time the right arrow is pressed
         }
 
         if (event == ECGV_EV_TIMER)
@@ -333,6 +393,40 @@ void ECMoveShapeCmd ::UnExecute()
     doc.AddShape(r);
 }
 
+//*******************************************************************************************
+// Create Group Command
+void ECCreateGroupCmd ::Execute()
+{
+    doc.CreateGroup(r);
+}
+
+void ECCreateGroupCmd ::UnExecute()
+{
+    doc.RemoveGroup(r);
+}
+
+//*******************************************************************************************
+// Ungroup Command
+void ECRemoveGroupCmd ::Execute()
+{
+    doc.RemoveGroup(r);
+}
+
+void ECRemoveGroupCmd ::UnExecute()
+{
+    doc.CreateGroup(r);
+}
+//*******************************************************************************************
+// Move Group Command
+void ECMoveGroupCmd ::Execute()
+{
+    doc.MoveGroup(r, xfactor, yfactor);
+}
+
+void ECMoveGroupCmd ::UnExecute()
+{
+}
+
 //***********************************************************************
 // Graphic Document Controller
 
@@ -354,6 +448,24 @@ void ECGraphicDocCtrl ::MoveShape(ECShape r, int xfactor, int yfactor)
 {
     ECMoveShapeCmd *pCmdMove = new ECMoveShapeCmd(doc, r, xfactor, yfactor);
     histCmds.ExecuteCmd(pCmdMove);
+}
+
+void ECGraphicDocCtrl ::CreateGroup(ECCompShape* r)
+{
+    ECCreateGroupCmd *pCmdGroup = new ECCreateGroupCmd(doc, r);
+    histCmds.ExecuteCmd(pCmdGroup);
+}
+
+void ECGraphicDocCtrl ::RemoveGroup(ECCompShape* r)
+{
+    ECRemoveGroupCmd *pCmdRemoveGroup = new ECRemoveGroupCmd(doc, r);
+    histCmds.ExecuteCmd(pCmdRemoveGroup);
+}
+
+void ECGraphicDocCtrl ::MoveGroup(ECCompShape* r, int xfactor, int yfactor)
+{
+    ECMoveGroupCmd *pCmdMoveGroup = new ECMoveGroupCmd(doc, r, xfactor, yfactor);
+    histCmds.ExecuteCmd(pCmdMoveGroup);
 }
 
 bool ECGraphicDocCtrl ::Undo()
@@ -431,4 +543,16 @@ void ECGraphicDoc ::MoveShape(ECShape r, int xfactor, int yfactor)
     }
     ECShape newShape(x1, y1, x2, y2, r.GetShapeType(), r.GetFill());
     listShapes[pos] = newShape;
+}
+
+void ECGraphicDoc ::CreateGroup(ECCompShape* r)
+{
+}
+
+void ECGraphicDoc ::RemoveGroup(ECCompShape* r)
+{
+}
+
+void ECGraphicDoc ::MoveGroup(ECCompShape* r, int xfactor, int yfactor)
+{
 }
